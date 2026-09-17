@@ -1033,6 +1033,25 @@ function closeEventModal() {
 setTimeout(() => {
 
   closeEventModal();
+
+  renderWeek();
+
+}, 500);
+  } catch (error) {
+
+    message.style.display = "block";
+    message.style.color = "#b42318";
+    message.textContent =
+      "Could not save event.";
+
+    console.error(error);
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Save Event";
+  }
+}
 async function openExistingEvent(id) {
 
   try {
@@ -1098,25 +1117,6 @@ async function openExistingEvent(id) {
   }
 
 }
-  renderWeek();
-
-}, 500);
-  } catch (error) {
-
-    message.style.display = "block";
-    message.style.color = "#b42318";
-    message.textContent =
-      "Could not save event.";
-
-    console.error(error);
-
-  } finally {
-
-    button.disabled = false;
-    button.textContent = "Save Event";
-  }
-}
-
 
 renderWeek();
 
