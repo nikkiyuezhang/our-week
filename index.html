@@ -1034,12 +1034,69 @@ function closeEventModal() {
 setTimeout(() => {
 
   closeEventModal();
-function openExistingEvent(id) {
+async function openExistingEvent(id) {
 
-  console.log(
-    "Clicked event:",
-    id
-  );
+  try {
+
+    const response =
+      await fetch("/api/events");
+
+    const data =
+      await response.json();
+
+    const event =
+      data.events.find(
+        item => Number(item.id) === Number(id)
+      );
+
+    if (!event) {
+      return;
+    }
+
+
+    document.getElementById("eventTitle").value =
+      event.title || "";
+
+    document.getElementById("eventCategory").value =
+      event.category || "family";
+
+    document.getElementById("eventStartDate").value =
+      event.start_date || "";
+
+    document.getElementById("eventEndDate").value =
+      event.end_date || "";
+
+    document.getElementById("eventStartTime").value =
+      event.start_time || "";
+
+    document.getElementById("eventEndTime").value =
+      event.end_time || "";
+
+    document.getElementById("eventPrepare").value =
+      event.prepare || "";
+
+    document.getElementById("eventLocation").value =
+      event.location || "";
+
+    document.getElementById("eventDetails").value =
+      event.details || "";
+
+    document.getElementById("eventRecurring").value =
+      event.recurring || "none";
+
+
+    document
+      .getElementById("eventModal")
+      .style.display = "flex";
+
+  } catch (error) {
+
+    console.error(
+      "Could not open event:",
+      error
+    );
+
+  }
 
 }
   renderWeek();
