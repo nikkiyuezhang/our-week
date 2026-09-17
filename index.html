@@ -742,41 +742,107 @@ async function renderWeek() {
   const grid =
     document.getElementById("weekGrid");
 
-  const monday = getMonday(new Date());
+  const monday =
+    getMonday(new Date());
 
-monday.setDate(
-  monday.getDate() + (weekOffset * 7)
-);
+  monday.setDate(
+    monday.getDate() + (weekOffset * 7)
+  );
 
-const sampleEvents = {};
+  const sampleEvents = {};
 
-try {
 
-  const response =
-    await fetch("/api/events");
+  try {
 
-  const data =
-    await response.json();
+    const response =
+      await fetch("/api/events");
 
-  if (data.success && Array.isArray(data.events)) {
+    const data =
+      await response.json();
 
-    data.events.forEach(event => {
 
-      const eventDate =
-        new Date(event.start_date + "T00:00:00");
+    if (data.success && Array.isArray(data.events)) {
 
-      const dayIndex =
-        Math.round(
-          (eventDate - monday) /
-          (1000 * 60 * 60 * 24)
-        );
+      data.events.forEach(event => {
 
-      if (dayIndex >= 0 && dayIndex <= 6) {
+        const originalDate =
+          new Date(
+            event.start_date + "T00:00:00"
+          );
+
+
+        /*
+          WORK OUT WHICH DAY THIS EVENT
+          SHOULD APPEAR IN THIS WEEK
+        */
+
+        let eventDate =
+          new Date(originalDate);
+
+
+        if (event.recurring === "weekly") {
+
+          /*
+            Weekly events repeat on the same
+            weekday from their original start date.
+          */
+
+          const targetWeekday =
+            originalDate.getDay();
+
+          eventDate =
+            new Date(monday);
+
+          const mondayWeekday =
+            monday.getDay();
+
+          let difference =
+            targetWeekday - mondayWeekday;
+
+          if (difference < 0) {
+            difference += 7;
+          }
+
+          eventDate.setDate(
+            monday.getDate() + difference
+          );
+
+
+          /*
+            Do not show the recurring event
+            before its original start date.
+          */
+
+          if (eventDate < originalDate) {
+            return;
+          }
+
+        }
+
+
+        const dayIndex =
+          Math.round(
+            (eventDate - monday) /
+            (1000 * 60 * 60 * 24)
+          );
+
+
+        if (
+          dayIndex < 0 ||
+          dayIndex > 6
+        ) {
+          return;
+        }
+
 
         if (!sampleEvents[dayIndex]) {
           sampleEvents[dayIndex] = [];
         }
 
+
+        /*
+          CATEGORY ICON
+        */
 
         let emoji = "📌";
 
@@ -797,6 +863,10 @@ try {
         }
 
 
+        /*
+          TIME
+        */
+
         let timeText = "";
 
         if (event.start_time) {
@@ -804,7 +874,8 @@ try {
           const [hour, minute] =
             event.start_time.split(":");
 
-          const tempDate = new Date();
+          const tempDate =
+            new Date();
 
           tempDate.setHours(
             Number(hour),
@@ -822,24 +893,39 @@ try {
         }
 
 
-sampleEvents[dayIndex].push({
-  text:
-    emoji +
-    " " +
-    timeText +
-    event.title,
+        /*
+          MAIN EVENT
+        */
 
-  className:
-    event.category,
+        sampleEvents[dayIndex].push({
 
-  eventId:
-    event.id
-});
+          text:
+            emoji +
+            " " +
+            timeText +
+            event.title +
+            (
+              event.recurring === "weekly"
+                ? " ↻"
+                : ""
+            ),
 
+          className:
+            event.category,
+
+          eventId:
+            event.id
+        });
+
+
+        /*
+          PREPARE REMINDER
+        */
 
         if (event.prepare) {
 
           sampleEvents[dayIndex].push({
+
             text:
               "⚠️ " +
               event.prepare,
@@ -849,25 +935,29 @@ sampleEvents[dayIndex].push({
           });
         }
 
-      }
+      });
 
-    });
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not load events:",
+      error
+    );
 
   }
 
-} catch (error) {
 
-  console.error(
-    "Could not load events:",
-    error
-  );
-
-}
+  /*
+    BUILD WEEK
+  */
 
   let html = "";
 
 
-  for (let i=0; i<7; i++) {
+  for (let i = 0; i < 7; i++) {
 
     const date =
       new Date(monday);
@@ -882,32 +972,44 @@ sampleEvents[dayIndex].push({
 
 
     html += `
-      <div class="day ${sameDate(date,now) ? "today" : ""}">
+      <div class="day ${sameDate(date, now) ? "today" : ""}">
 
         <div class="day-name">
-          ${date.toLocaleDateString("en-AU",{weekday:"short"})}
+          ${date.toLocaleDateString(
+            "en-AU",
+            {
+              weekday: "short"
+            }
+          )}
         </div>
 
         <div class="day-number">
           ${date.getDate()}
         </div>
 
-  ${events
-  .map(
-    event => `
-      <div
-        class="event ${event.className}"
-        ${event.eventId
-          ? `data-event-id="${event.eventId}" onclick="openExistingEvent(this.dataset.eventId)" style="cursor:pointer;"`
-          : ""
+
+        ${events
+          .map(
+            event => `
+              <div
+                class="event ${event.className}"
+                ${
+                  event.eventId
+                    ? `
+                      data-event-id="${event.eventId}"
+                      onclick="openExistingEvent(this.dataset.eventId)"
+                      style="cursor:pointer;"
+                    `
+                    : ""
+                }
+              >
+                ${event.text}
+              </div>
+            `
+          )
+          .join("")
         }
-      >
-        ${event.text}
-      </div>
-    `
-  )
-  .join("")
-}
+
       </div>
     `;
   }
