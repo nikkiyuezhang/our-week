@@ -945,14 +945,14 @@ function closeEventModal() {
     .getElementById("eventModal")
     .style.display = "none";
 }
-  async function saveEvent() {
+
+async function saveEvent() {
 
   const button =
     document.getElementById("saveEventButton");
 
   const message =
     document.getElementById("eventFormMessage");
-
 
   const title =
     document.getElementById("eventTitle").value.trim();
@@ -1003,19 +1003,19 @@ function closeEventModal() {
 
 
   try {
-const response =
-  await fetch("/api/events", {
 
-    method: editingEventId ? "PATCH" : "POST",
+    const response =
+      await fetch("/api/events", {
 
-    headers: {
-      "Content-Type": "application/json"
-    },
+        method: editingEventId ? "PATCH" : "POST",
 
-    body: JSON.stringify({
+        headers: {
+          "Content-Type": "application/json"
+        },
 
-      id: editingEventId,
-  
+        body: JSON.stringify({
+
+          id: editingEventId,
 
           title: title,
           category: category,
@@ -1051,71 +1051,17 @@ const response =
     message.style.color = "#287a4b";
     message.textContent = "✓ Event saved";
 
-setTimeout(() => {
 
-  closeEventModal();
-async function deleteEvent() {
+    setTimeout(() => {
 
-  if (!editingEventId) {
-    return;
-  }
+      closeEventModal();
 
-  const confirmed =
-    confirm("Delete this event?");
+      renderWeek();
+      renderToday();
 
-  if (!confirmed) {
-    return;
-  }
+    }, 500);
 
-  const button =
-    document.getElementById("deleteEventButton");
 
-  button.disabled = true;
-  button.textContent = "Deleting...";
-
-  try {
-
-    const response =
-      await fetch(
-        `/api/events?id=${editingEventId}`,
-        {
-          method: "DELETE"
-        }
-      );
-
-    const data =
-      await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.error || "Could not delete event."
-      );
-    }
-
-    editingEventId = null;
-
-    closeEventModal();
-
-    await renderWeek();
-
-  } catch (error) {
-
-    alert("Could not delete event.");
-
-    console.error(
-      "Delete event error:",
-      error
-    );
-
-  } finally {
-
-    button.disabled = false;
-    button.textContent = "Delete Event";
-  }
-}
-  renderWeek();
-
-}, 500);
   } catch (error) {
 
     message.style.display = "block";
@@ -1125,12 +1071,15 @@ async function deleteEvent() {
 
     console.error(error);
 
+
   } finally {
 
     button.disabled = false;
     button.textContent = "Save Event";
+
   }
 }
+  
 async function openExistingEvent(id) {
 editingEventId = Number(id);
   document.getElementById("deleteEventButton").style.display = "block";
@@ -1197,7 +1146,7 @@ editingEventId = Number(id);
   }
 
 }
-async function deleteEvent() {
+ {
 
   if (!editingEventId) {
     return;
