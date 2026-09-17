@@ -766,8 +766,11 @@ async function renderWeek() {
   const grid =
     document.getElementById("weekGrid");
 
-  const monday =
-    getMonday(new Date());
+  const monday = getMonday(new Date());
+
+monday.setDate(
+  monday.getDate() + (weekOffset * 7)
+);
 
 const sampleEvents = {};
 
@@ -937,7 +940,12 @@ sampleEvents[dayIndex].push({
   grid.innerHTML =
     html;
 }
+function changeWeek(direction) {
 
+  weekOffset += direction;
+
+  renderWeek();
+}
 function openEventModal() {
 editingEventId = null;
   document.getElementById("eventTitle").value = "";
