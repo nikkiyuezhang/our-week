@@ -1256,7 +1256,139 @@ async function deleteEvent() {
     button.textContent = "Delete Event";
   }
 }
+  async function renderToday() {
+
+  const grid = document.getElementById("todayGrid");
+
+  if (!grid) return;
+
+  try {
+
+    const response = await fetch("/api/events");
+    const data = await response.json();
+
+    if (!data.success || !Array.isArray(data.events)) {
+      return;
+    }
+
+    const today = new Date();
+
+    const todayString =
+      today.getFullYear() + "-" +
+      String(today.getMonth() + 1).padStart(2, "0") + "-" +
+      String(today.getDate()).padStart(2, "0");
+
+    const todayEvents =
+      data.events.filter(
+        event => event.start_date === todayString
+      );
+
+    if (todayEvents.length === 0) {
+
+      grid.innerHTML = `
+        <div class="today-card">
+          <div class="today-label">☀️ Today</div>
+
+          <div class="today-main">
+            Nothing planned today
+          </div>
+
+          <div class="today-detail">
+            Enjoy the quiet day.
+          </div>
+        </div>
+      `;
+
+      return;
+    }
+
+    grid.innerHTML =
+      todayEvents.map(event => {
+
+        let emoji = "📌";
+
+        if (event.category === "school") emoji = "🎒";
+        if (event.category === "activity") emoji = "🏊";
+        if (event.category === "family") emoji = "👨‍👩‍👧";
+        if (event.category === "travel") emoji = "✈️";
+
+        let timeText = "";
+
+        if (event.start_time) {
+
+          const [hour, minute] =
+            event.start_time.split(":");
+
+          const tempDate = new Date();
+
+          tempDate.setHours(
+            Number(hour),
+            Number(minute)
+          );
+
+          timeText =
+            tempDate.toLocaleTimeString(
+              "en-AU",
+              {
+                hour: "numeric",
+                minute: "2-digit"
+              }
+            );
+        }
+
+        return `
+          <div
+            class="today-card"
+            onclick="openExistingEvent(${event.id})"
+            style="cursor:pointer;"
+          >
+
+            <div class="today-label">
+              ${emoji} ${event.category}
+            </div>
+
+            <div class="today-main">
+              ${event.title}
+            </div>
+
+            ${
+              timeText || event.location
+                ? `
+                  <div class="today-detail">
+                    ${timeText}
+                    ${timeText && event.location ? " · " : ""}
+                    ${event.location || ""}
+                  </div>
+                `
+                : ""
+            }
+
+            ${
+              event.prepare
+                ? `
+                  <div class="prepare">
+                    ⚠️ ${event.prepare}
+                  </div>
+                `
+                : ""
+            }
+
+          </div>
+        `;
+
+      }).join("");
+
+  } catch (error) {
+
+    console.error(
+      "Could not load today's events:",
+      error
+    );
+
+  }
+}
 renderWeek();
+renderToday();
 
 </script>
 <!-- ADD EVENT MODAL -->
