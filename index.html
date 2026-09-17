@@ -670,7 +670,7 @@ button {
 <script>
 
 /* TODAY */
-
+let editingEventId = null;
 const now = new Date();
 
 document.getElementById("todayDate").textContent =
@@ -904,7 +904,7 @@ sampleEvents[dayIndex].push({
 }
 
 function openEventModal() {
-
+editingEventId = null;
   const modal =
     document.getElementById("eventModal");
 
@@ -1053,7 +1053,7 @@ setTimeout(() => {
   }
 }
 async function openExistingEvent(id) {
-
+editingEventId = Number(id);
   try {
 
     const response =
