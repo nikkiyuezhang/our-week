@@ -821,6 +821,202 @@ function renderWeek() {
 renderWeek();
 
 </script>
+<!-- ADD EVENT MODAL -->
 
+<div id="eventModal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:1000;
+  padding:20px;
+  align-items:center;
+  justify-content:center;
+">
+
+  <div style="
+    background:white;
+    width:100%;
+    max-width:520px;
+    border-radius:20px;
+    padding:24px;
+    max-height:90vh;
+    overflow:auto;
+  ">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:20px;
+    ">
+
+      <div style="font-size:21px;font-weight:700;">
+        📅 Add Event
+      </div>
+
+      <button
+        type="button"
+        onclick="closeEventModal()"
+        style="
+          border:0;
+          background:none;
+          font-size:25px;
+          cursor:pointer;
+        "
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div style="margin-bottom:14px;">
+      <label><strong>Event name</strong></label>
+      <input
+        id="eventTitle"
+        type="text"
+        placeholder="e.g. Colour Run"
+        style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;"
+      >
+    </div>
+
+
+    <div style="margin-bottom:14px;">
+      <label><strong>Category</strong></label>
+
+      <select
+        id="eventCategory"
+        style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;"
+      >
+        <option value="school">🎒 School</option>
+        <option value="activity">🏊 Activity</option>
+        <option value="family">👨‍👩‍👧 Family</option>
+        <option value="travel">✈️ Travel</option>
+        <option value="reminder">📌 Reminder</option>
+      </select>
+    </div>
+
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+
+      <div>
+        <label><strong>Start date</strong></label>
+        <input
+          id="eventStartDate"
+          type="date"
+          style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;"
+        >
+      </div>
+
+      <div>
+        <label><strong>End date</strong></label>
+        <input
+          id="eventEndDate"
+          type="date"
+          style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;"
+        >
+      </div>
+
+    </div>
+
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+
+      <div>
+        <label><strong>Start time</strong></label>
+        <input
+          id="eventStartTime"
+          type="time"
+          style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;"
+        >
+      </div>
+
+      <div>
+        <label><strong>End time</strong></label>
+        <input
+          id="eventEndTime"
+          type="time"
+          style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;"
+        >
+      </div>
+
+    </div>
+
+
+    <div style="margin-bottom:14px;">
+      <label><strong>What do we need to prepare?</strong></label>
+      <input
+        id="eventPrepare"
+        type="text"
+        placeholder="e.g. Bring white T-shirt"
+        style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;"
+      >
+    </div>
+
+
+    <div style="margin-bottom:14px;">
+      <label><strong>Location</strong></label>
+      <input
+        id="eventLocation"
+        type="text"
+        placeholder="Optional"
+        style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;"
+      >
+    </div>
+
+
+    <div style="margin-bottom:14px;">
+      <label><strong>Notes</strong></label>
+      <textarea
+        id="eventDetails"
+        rows="3"
+        placeholder="Anything else we need to know?"
+        style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;resize:vertical;"
+      ></textarea>
+    </div>
+
+
+    <div style="margin-bottom:20px;">
+      <label><strong>Repeat</strong></label>
+
+      <select
+        id="eventRecurring"
+        style="width:100%;padding:11px;margin-top:6px;border:1px solid #ddd;border-radius:9px;"
+      >
+        <option value="none">Doesn't repeat</option>
+        <option value="weekly">Every week</option>
+      </select>
+    </div>
+
+
+    <div id="eventFormMessage" style="
+      display:none;
+      margin-bottom:12px;
+      font-size:14px;
+    "></div>
+
+
+    <button
+      type="button"
+      id="saveEventButton"
+      style="
+        width:100%;
+        border:0;
+        background:#375b4a;
+        color:white;
+        padding:12px;
+        border-radius:10px;
+        font-weight:700;
+        font-size:15px;
+        cursor:pointer;
+      "
+    >
+      Save Event
+    </button>
+
+  </div>
+
+</div>
 </body>
 </html>
