@@ -1383,31 +1383,121 @@ async function openExistingEvent(id, occurrenceDate = null) {
 
 }
 
-  
- async function deleteEvent() {
+  async function deleteEvent() {
 
   if (!editingEventId) {
     return;
   }
 
-  const confirmed =
-    confirm("Delete this event?");
 
-  if (!confirmed) {
-    return;
+  /*
+    FIND CURRENT EVENT
+  */
+
+  let currentEvent = null;
+
+  try {
+
+    const eventResponse =
+      await fetch("/api/events");
+
+    const eventData =
+      await eventResponse.json();
+
+    currentEvent =
+      eventData.events.find(
+        item =>
+          Number(item.id) ===
+          Number(editingEventId)
+      );
+
+  } catch (error) {
+
+    console.error(
+      "Could not check event:",
+      error
+    );
+
   }
 
+
+  let deleteUrl =
+    `/api/events?id=${editingEventId}`;
+
+
+  /*
+    WEEKLY EVENT
+  */
+
+  if (
+    currentEvent &&
+    currentEvent.recurring === "weekly" &&
+    editingOccurrenceDate
+  ) {
+
+    const deleteSingle =
+      confirm(
+        "Delete only this occurrence?\n\n" +
+        editingOccurrenceDate +
+        "\n\n" +
+        "OK = This event only\n" +
+        "Cancel = More options"
+      );
+
+
+    if (deleteSingle) {
+
+      deleteUrl =
+        `/api/events?id=${editingEventId}` +
+        `&mode=single` +
+        `&date=${editingOccurrenceDate}`;
+
+    } else {
+
+      const deleteAll =
+        confirm(
+          "Delete ALL occurrences of this weekly event?\n\n" +
+          "OK = Delete entire series\n" +
+          "Cancel = Keep everything"
+        );
+
+
+      if (!deleteAll) {
+        return;
+      }
+
+    }
+
+  } else {
+
+    /*
+      NORMAL NON-RECURRING EVENT
+    */
+
+    const confirmed =
+      confirm("Delete this event?");
+
+    if (!confirmed) {
+      return;
+    }
+
+  }
+
+
   const button =
-    document.getElementById("deleteEventButton");
+    document.getElementById(
+      "deleteEventButton"
+    );
 
   button.disabled = true;
   button.textContent = "Deleting...";
+
 
   try {
 
     const response =
       await fetch(
-        `/api/events?id=${editingEventId}`,
+        deleteUrl,
         {
           method: "DELETE"
         }
@@ -1416,17 +1506,26 @@ async function openExistingEvent(id, occurrenceDate = null) {
     const data =
       await response.json();
 
+
     if (!response.ok || !data.success) {
+
       throw new Error(
-        data.error || "Could not delete event."
+        data.error ||
+        "Could not delete event."
       );
+
     }
 
+
     editingEventId = null;
+    editingOccurrenceDate = null;
 
     closeEventModal();
 
     await renderWeek();
+    await renderToday();
+    await renderUpcoming();
+
 
   } catch (error) {
 
@@ -1437,12 +1536,17 @@ async function openExistingEvent(id, occurrenceDate = null) {
       error
     );
 
+
   } finally {
 
     button.disabled = false;
-    button.textContent = "Delete Event";
+    button.textContent =
+      "Delete Event";
+
   }
 }
+
+  
   async function renderToday() {
 
   const grid = document.getElementById("todayGrid");
