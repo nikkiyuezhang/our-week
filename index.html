@@ -905,6 +905,19 @@ sampleEvents[dayIndex].push({
 
 function openEventModal() {
 editingEventId = null;
+  document.getElementById("eventTitle").value = "";
+document.getElementById("eventCategory").value = "family";
+document.getElementById("eventStartDate").value =
+  new Date().toISOString().split("T")[0];
+document.getElementById("eventEndDate").value = "";
+document.getElementById("eventStartTime").value = "";
+document.getElementById("eventEndTime").value = "";
+document.getElementById("eventPrepare").value = "";
+document.getElementById("eventLocation").value = "";
+document.getElementById("eventDetails").value = "";
+document.getElementById("eventRecurring").value = "none";
+
+document.getElementById("eventFormMessage").style.display = "none";
   document.getElementById("deleteEventButton").style.display = "none";
   const modal =
     document.getElementById("eventModal");
