@@ -878,15 +878,13 @@ sampleEvents[dayIndex].push({
           ${date.getDate()}
         </div>
 
-      ${events
+    ${events
   .map(
     event => `
       <div
         class="event ${event.className}"
-        ${event.eventId
-          ? `onclick="openExistingEvent(${event.eventId})" style="cursor:pointer;"`
-          : ""
-        }
+        onclick="alert('clicked')"
+        style="cursor:pointer;"
       >
         ${event.text}
       </div>
@@ -894,7 +892,6 @@ sampleEvents[dayIndex].push({
   )
   .join("")
 }
-
       </div>
     `;
   }
