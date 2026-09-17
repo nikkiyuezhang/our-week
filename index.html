@@ -1036,7 +1036,65 @@ const response =
 setTimeout(() => {
 
   closeEventModal();
+async function deleteEvent() {
 
+  if (!editingEventId) {
+    return;
+  }
+
+  const confirmed =
+    confirm("Delete this event?");
+
+  if (!confirmed) {
+    return;
+  }
+
+  const button =
+    document.getElementById("deleteEventButton");
+
+  button.disabled = true;
+  button.textContent = "Deleting...";
+
+  try {
+
+    const response =
+      await fetch(
+        `/api/events?id=${editingEventId}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.error || "Could not delete event."
+      );
+    }
+
+    editingEventId = null;
+
+    closeEventModal();
+
+    await renderWeek();
+
+  } catch (error) {
+
+    alert("Could not delete event.");
+
+    console.error(
+      "Delete event error:",
+      error
+    );
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Delete Event";
+  }
+}
   renderWeek();
 
 }, 500);
