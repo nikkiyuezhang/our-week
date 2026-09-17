@@ -475,6 +475,21 @@ button {
       font-weight:600;
     "
   >
+    <button
+  type="button"
+  onclick="goToCurrentWeek()"
+  style="
+    border:1px solid #375b4a;
+    background:#375b4a;
+    color:white;
+    padding:7px 11px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+  "
+>
+  This Week
+</button>
     Next →
   </button>
 </div>
@@ -943,6 +958,12 @@ sampleEvents[dayIndex].push({
 function changeWeek(direction) {
 
   weekOffset += direction;
+
+  renderWeek();
+}
+  function goToCurrentWeek() {
+
+  weekOffset = 0;
 
   renderWeek();
 }
