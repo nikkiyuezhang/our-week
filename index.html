@@ -808,7 +808,7 @@ try {
         }
 
 
-      sampleEvents[dayIndex].push({
+sampleEvents[dayIndex].push({
   text:
     emoji +
     " " +
@@ -818,8 +818,8 @@ try {
   className:
     event.category,
 
-  eventData:
-    event
+  eventId:
+    event.id
 });
 
 
@@ -878,13 +878,13 @@ try {
           ${date.getDate()}
         </div>
 
-       ${events
+      ${events
   .map(
     event => `
       <div
         class="event ${event.className}"
-        ${event.eventData
-          ? `onclick="openExistingEvent(${event.eventData.id})" style="cursor:pointer;"`
+        ${event.eventId
+          ? `onclick="openExistingEvent(${event.eventId})" style="cursor:pointer;"`
           : ""
         }
       >
