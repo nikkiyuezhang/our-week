@@ -1274,13 +1274,14 @@ async function saveEvent() {
 
     setTimeout(() => {
 
-      closeEventModal();
+  closeEventModal();
 
-      renderWeek();
-      renderToday();
+  renderWeek();
+  renderToday();
+  renderTomorrow();
+  renderUpcoming();
 
-    }, 500);
-
+}, 500);
 
   } catch (error) {
 
