@@ -808,16 +808,19 @@ try {
         }
 
 
-        sampleEvents[dayIndex].push({
-          text:
-            emoji +
-            " " +
-            timeText +
-            event.title,
+      sampleEvents[dayIndex].push({
+  text:
+    emoji +
+    " " +
+    timeText +
+    event.title,
 
-          className:
-            event.category
-        });
+  className:
+    event.category,
+
+  eventData:
+    event
+});
 
 
         if (event.prepare) {
@@ -875,16 +878,22 @@ try {
           ${date.getDate()}
         </div>
 
-        ${events
-          .map(
-            event => `
-              <div class="event ${event.className}">
-                ${event.text}
-              </div>
-            `
-          )
-          .join("")
+       ${events
+  .map(
+    event => `
+      <div
+        class="event ${event.className}"
+        ${event.eventData
+          ? `onclick="openExistingEvent(${event.eventData.id})" style="cursor:pointer;"`
+          : ""
         }
+      >
+        ${event.text}
+      </div>
+    `
+  )
+  .join("")
+}
 
       </div>
     `;
@@ -1025,7 +1034,14 @@ function closeEventModal() {
 setTimeout(() => {
 
   closeEventModal();
+function openExistingEvent(id) {
 
+  console.log(
+    "Clicked event:",
+    id
+  );
+
+}
   renderWeek();
 
 }, 500);
