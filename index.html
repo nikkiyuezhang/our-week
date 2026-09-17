@@ -962,12 +962,6 @@ function closeEventModal() {
 }
 
 
-document
-  .getElementById("saveEventButton")
-  ?.addEventListener(
-    "click",
-    saveEvent
-  );
 renderWeek();
 
 </script>
@@ -1150,6 +1144,7 @@ renderWeek();
     <button
       type="button"
       id="saveEventButton"
+      onclick="saveEvent()"
       style="
         width:100%;
         border:0;
