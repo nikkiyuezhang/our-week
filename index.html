@@ -778,7 +778,6 @@ function sameDate(a,b) {
   );
 }
 
-
 async function renderWeek() {
 
   const grid =
@@ -805,6 +804,12 @@ async function renderWeek() {
 
     if (data.success && Array.isArray(data.events)) {
 
+      const exceptions =
+        Array.isArray(data.exceptions)
+          ? data.exceptions
+          : [];
+
+
       data.events.forEach(event => {
 
         const originalDate =
@@ -823,11 +828,6 @@ async function renderWeek() {
 
 
         if (event.recurring === "weekly") {
-
-          /*
-            Weekly events repeat on the same
-            weekday from their original start date.
-          */
 
           const targetWeekday =
             originalDate.getDay();
@@ -851,14 +851,56 @@ async function renderWeek() {
 
 
           /*
-            Do not show the recurring event
-            before its original start date.
+            DO NOT SHOW BEFORE
+            ORIGINAL START DATE
           */
 
           if (eventDate < originalDate) {
             return;
           }
 
+        }
+
+
+        /*
+          CREATE OCCURRENCE DATE
+          YYYY-MM-DD
+        */
+
+        const occurrenceDate =
+          [
+            eventDate.getFullYear(),
+            String(
+              eventDate.getMonth() + 1
+            ).padStart(2, "0"),
+            String(
+              eventDate.getDate()
+            ).padStart(2, "0")
+          ].join("-");
+
+
+        /*
+          CHECK WHETHER THIS OCCURRENCE
+          HAS BEEN DELETED
+        */
+
+        const occurrenceDeleted =
+          exceptions.some(exception =>
+
+            Number(exception.event_id) ===
+              Number(event.id) &&
+
+            exception.exception_date ===
+              occurrenceDate &&
+
+            exception.exception_type ===
+              "deleted"
+
+          );
+
+
+        if (occurrenceDeleted) {
+          return;
         }
 
 
@@ -956,7 +998,10 @@ async function renderWeek() {
             event.category,
 
           eventId:
-            event.id
+            event.id,
+
+          occurrenceDate:
+            occurrenceDate
         });
 
 
@@ -1039,7 +1084,11 @@ async function renderWeek() {
                   event.eventId
                     ? `
                       data-event-id="${event.eventId}"
-                      onclick="openExistingEvent(this.dataset.eventId)"
+                      data-occurrence-date="${event.occurrenceDate}"
+                      onclick="openExistingEvent(
+                        this.dataset.eventId,
+                        this.dataset.occurrenceDate
+                      )"
                       style="cursor:pointer;"
                     `
                     : ""
@@ -1060,6 +1109,7 @@ async function renderWeek() {
   grid.innerHTML =
     html;
 }
+
 function changeWeek(direction) {
 
   weekOffset += direction;
