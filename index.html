@@ -1022,7 +1022,13 @@ function closeEventModal() {
     message.style.color = "#287a4b";
     message.textContent = "✓ Event saved";
 
+setTimeout(() => {
 
+  closeEventModal();
+
+  renderWeek();
+
+}, 500);
   } catch (error) {
 
     message.style.display = "block";
