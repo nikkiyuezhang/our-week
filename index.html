@@ -734,40 +734,118 @@ function renderWeek() {
   const monday =
     getMonday(new Date());
 
-  const sampleEvents = {
-    0: [
-      {
-        text:"📚 Library Day",
-        className:"school"
-      }
-    ],
+const sampleEvents = {};
 
-    3: [
-      {
-        text:"🏊 6:00 PM Swimming",
-        className:"activity"
-      }
-    ],
+try {
 
-    4: [
-      {
-        text:"🎨 Colour Run",
-        className:"school"
-      },
-      {
-        text:"⚠️ White T-shirt",
-        className:"reminder"
-      }
-    ],
+  const response =
+    await fetch("/api/events");
 
-    5: [
-      {
-        text:"🛒 Grocery shopping",
-        className:"family"
-      }
-    ]
-  };
+  const data =
+    await response.json();
 
+  if (data.success && Array.isArray(data.events)) {
+
+    data.events.forEach(event => {
+
+      const eventDate =
+        new Date(event.start_date + "T00:00:00");
+
+      const dayIndex =
+        Math.round(
+          (eventDate - monday) /
+          (1000 * 60 * 60 * 24)
+        );
+
+      if (dayIndex >= 0 && dayIndex <= 6) {
+
+        if (!sampleEvents[dayIndex]) {
+          sampleEvents[dayIndex] = [];
+        }
+
+
+        let emoji = "📌";
+
+        if (event.category === "school") {
+          emoji = "🎒";
+        }
+
+        if (event.category === "activity") {
+          emoji = "🏊";
+        }
+
+        if (event.category === "family") {
+          emoji = "👨‍👩‍👧";
+        }
+
+        if (event.category === "travel") {
+          emoji = "✈️";
+        }
+
+
+        let timeText = "";
+
+        if (event.start_time) {
+
+          const [hour, minute] =
+            event.start_time.split(":");
+
+          const tempDate = new Date();
+
+          tempDate.setHours(
+            Number(hour),
+            Number(minute)
+          );
+
+          timeText =
+            tempDate.toLocaleTimeString(
+              "en-AU",
+              {
+                hour: "numeric",
+                minute: "2-digit"
+              }
+            ) + " ";
+        }
+
+
+        sampleEvents[dayIndex].push({
+          text:
+            emoji +
+            " " +
+            timeText +
+            event.title,
+
+          className:
+            event.category
+        });
+
+
+        if (event.prepare) {
+
+          sampleEvents[dayIndex].push({
+            text:
+              "⚠️ " +
+              event.prepare,
+
+            className:
+              "reminder"
+          });
+        }
+
+      }
+
+    });
+
+  }
+
+} catch (error) {
+
+  console.error(
+    "Could not load events:",
+    error
+  );
+
+}
 
   let html = "";
 
