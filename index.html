@@ -840,6 +840,134 @@ function closeEventModal() {
     .getElementById("eventModal")
     .style.display = "none";
 }
+  async function saveEvent() {
+
+  const button =
+    document.getElementById("saveEventButton");
+
+  const message =
+    document.getElementById("eventFormMessage");
+
+
+  const title =
+    document.getElementById("eventTitle").value.trim();
+
+  const category =
+    document.getElementById("eventCategory").value;
+
+  const startDate =
+    document.getElementById("eventStartDate").value;
+
+  const endDate =
+    document.getElementById("eventEndDate").value;
+
+  const startTime =
+    document.getElementById("eventStartTime").value;
+
+  const endTime =
+    document.getElementById("eventEndTime").value;
+
+  const prepare =
+    document.getElementById("eventPrepare").value.trim();
+
+  const location =
+    document.getElementById("eventLocation").value.trim();
+
+  const details =
+    document.getElementById("eventDetails").value.trim();
+
+  const recurring =
+    document.getElementById("eventRecurring").value;
+
+
+  if (!title || !startDate) {
+
+    message.style.display = "block";
+    message.style.color = "#b42318";
+    message.textContent =
+      "Please add an event name and date.";
+
+    return;
+  }
+
+
+  button.disabled = true;
+  button.textContent = "Saving...";
+
+  message.style.display = "none";
+
+
+  try {
+
+    const response =
+      await fetch("/api/events", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          title: title,
+          category: category,
+
+          start_date: startDate,
+          end_date: endDate || null,
+
+          start_time: startTime || null,
+          end_time: endTime || null,
+
+          prepare: prepare || null,
+          location: location || null,
+          details: details || null,
+
+          recurring: recurring
+        })
+      });
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok || !data.success) {
+
+      throw new Error(
+        data.error || "Could not save event."
+      );
+    }
+
+
+    message.style.display = "block";
+    message.style.color = "#287a4b";
+    message.textContent = "✓ Event saved";
+
+
+  } catch (error) {
+
+    message.style.display = "block";
+    message.style.color = "#b42318";
+    message.textContent =
+      "Could not save event.";
+
+    console.error(error);
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Save Event";
+  }
+}
+
+
+document
+  .getElementById("saveEventButton")
+  ?.addEventListener(
+    "click",
+    saveEvent
+  );
 renderWeek();
 
 </script>
