@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Our Week</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f7f6f2;
+  color: #24302b;
+}
+
+.page {
+  max-width: 1180px;
+  margin: auto;
+  padding: 28px 20px 60px;
+}
+
+/* HEADER */
+
+.header {
+  background: linear-gradient(135deg, #375b4a, #557765);
+  color: white;
+  border-radius: 24px;
+  padding: 28px 30px;
+  margin-bottom: 20px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand {
+  font-size: 14px;
+  opacity: .85;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 5px 0 5px;
+  font-size: 36px;
+}
+
+.subtitle {
+  opacity: .9;
+}
+
+.today-pill {
+  background: rgba(255,255,255,.16);
+  padding: 10px 15px;
+  border-radius: 30px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* GENERAL */
+
+.section {
+  background: white;
+  border: 1px solid #e7e5de;
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.section-note {
+  color: #778078;
+  font-size: 13px;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+}
+
+.add-button {
+  border: 0;
+  background: #375b4a;
+  color: white;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* TODAY */
+
+.today-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 14px;
+}
+
+.today-card {
+  background: #faf9f5;
+  border: 1px solid #ebe8df;
+  border-radius: 16px;
+  padding: 17px;
+}
+
+.today-label {
+  color: #788178;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+  margin-bottom: 9px;
+}
+
+.today-main {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 7px;
+}
+
+.today-detail {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #58625b;
+}
+
+.prepare {
+  margin-top: 10px;
+  background: #fff2cc;
+  color: #725a16;
+  border-radius: 9px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+/* WEEK */
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 9px;
+}
+
+.day {
+  min-height: 155px;
+  border: 1px solid #e7e5de;
+  border-radius: 14px;
+  padding: 11px;
+  background: #fcfbf8;
+}
+
+.day.today {
+  border: 2px solid #557765;
+  background: #f5f9f6;
+}
+
+.day-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #737d75;
+  text-transform: uppercase;
+}
+
+.day-number {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 4px 0 10px;
+}
+
+.event {
+  padding: 7px 8px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.school {
+  background: #e9f0ff;
+}
+
+.activity {
+  background: #e8f6ef;
+}
+
+.family {
+  background: #f4eafb;
+}
+
+.reminder {
+  background: #fff2cc;
+}
+
+.travel {
+  background: #e6f4f7;
+}
+
+/* TWO COLUMN */
+
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* KIDS */
+
+.list-item {
+  border-bottom: 1px solid #efede7;
+  padding: 12px 0;
+}
+
+.list-item:last-child {
+  border-bottom: 0;
+}
+
+.list-title {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.list-meta {
+  color: #717a73;
+  font-size: 13px;
+}
+
+.alert {
+  color: #806219;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* MEALS */
+
+.meal-row {
+  display: grid;
+  grid-template-columns: 55px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #efede7;
+}
+
+.meal-row:last-child {
+  border-bottom: 0;
+}
+
+.meal-day {
+  font-size: 13px;
+  color: #727b74;
+  font-weight: 700;
+}
+
+.meal-name {
+  font-weight: 600;
+}
+
+/* COMING UP */
+
+.upcoming-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.upcoming {
+  background: #faf9f5;
+  border: 1px solid #ebe8df;
+  border-radius: 15px;
+  padding: 16px;
+}
+
+.upcoming-date {
+  color: #657067;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 7px;
+}
+
+.upcoming-title {
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.upcoming-detail {
+  color: #6d766f;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+
+  .today-grid,
+  .two-column,
+  .upcoming-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .week-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .day {
+    min-height: auto;
+  }
+
+  .header-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+
+  <header class="header">
+
+    <div class="header-top">
+
+      <div>
+        <div class="brand">🏡 Our Family</div>
+        <h1>Our Week</h1>
+        <div class="subtitle">
+          School, activities, meals & family life — all in one place.
+        </div>
+      </div>
+
+      <div class="today-pill" id="todayDate">
+        Today
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- TODAY -->
+
+  <section class="section">
+
+    <div class="section-title-row">
+      <div>
+        <div class="section-title">☀️ Today</div>
+        <div class="section-note" id="todayHeading"></div>
+      </div>
+
+      <button class="add-button">
+        + Add Event
+      </button>
+    </div>
+
+
+    <div class="today-grid">
+
+      <div class="today-card">
+
+        <div class="today-label">🎒 School & Kids</div>
+
+        <div class="today-main">
+          Normal school day
+        </div>
+
+        <div class="today-detail">
+          Colour Run is coming up tomorrow.
+        </div>
+
+        <div class="prepare">
+          ⚠️ Prepare tonight: White T-shirt
+        </div>
+
+      </div>
+
+
+      <div class="today-card">
+
+        <div class="today-label">🏊 Activity</div>
+
+        <div class="today-main">
+          Swimming
+        </div>
+
+        <div class="today-detail">
+          Thursday evening · 6:00 PM
+        </div>
+
+      </div>
+
+
+      <div class="today-card">
+
+        <div class="today-label">🍽️ Dinner</div>
+
+        <div class="today-main">
+          Chicken stir-fry + rice
+        </div>
+
+        <div class="today-detail">
+          Quick family dinner tonight.
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- THIS WEEK -->
+
+  <section class="section">
+
+    <div class="section-title-row">
+
+      <div>
+        <div class="section-title">📅 This Week</div>
+        <div class="section-note">
+          Everything happening across the family.
+        </div>
+      </div>
+
+      <button class="add-button">
+        + Add Event
+      </button>
+
+    </div>
+
+
+    <div class="week-grid" id="weekGrid">
+
+      <!-- Generated by JavaScript -->
+
+    </div>
+
+  </section>
+
+
+  <!-- SCHOOL + MEALS -->
+
+  <div class="two-column">
+
+
+    <!-- SCHOOL -->
+
+    <section class="section">
+
+      <div class="section-title-row">
+
+        <div>
+          <div class="section-title">🎒 School & Kids</div>
+          <div class="section-note">
+            Things we don't want to forget.
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="list-item">
+
+        <div class="list-title">
+          🎨 Colour Run
+        </div>
+
+        <div class="list-meta">
+          Friday · School
+        </div>
+
+        <div class="alert">
+          ⚠️ Bring white T-shirt
+        </div>
+
+      </div>
+
+
+      <div class="list-item">
+
+        <div class="list-title">
+          📚 Library Day
+        </div>
+
+        <div class="list-meta">
+          Monday
+        </div>
+
+        <div class="alert">
+          Remember library books
+        </div>
+
+      </div>
+
+
+      <div class="list-item">
+
+        <div class="list-title">
+          🏊 Swimming
+        </div>
+
+        <div class="list-meta">
+          Every Thursday · 6:00 PM
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- MEALS -->
+
+    <section class="section">
+
+      <div class="section-title-row">
+
+        <div>
+          <div class="section-title">🍽️ Meal Plan</div>
+          <div class="section-note">
+            What's for dinner?
+          </div>
+        </div>
+
+        <button class="add-button">
+          + Add Meal
+        </button>
+
+      </div>
+
+
+      <div class="meal-row">
+        <div class="meal-day">MON</div>
+        <div class="meal-name">🥟 Dumplings</div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-day">TUE</div>
+        <div class="meal-name">🥩 Beef stir-fry</div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-day">WED</div>
+        <div class="meal-name">🍝 Pasta</div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-day">THU</div>
+        <div class="meal-name">🍚 Chicken stir-fry + rice</div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-day">FRI</div>
+        <div class="meal-name">🍕 Takeaway night</div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-day">SAT</div>
+        <div class="meal-name">🔥 BBQ</div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-day">SUN</div>
+        <div class="meal-name">🍲 Hotpot</div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- COMING UP -->
+
+  <section class="section">
+
+    <div class="section-title-row">
+
+      <div>
+        <div class="section-title">✨ Coming Up</div>
+        <div class="section-note">
+          Trips, school events and important family dates.
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="upcoming-grid">
+
+      <div class="upcoming">
+
+        <div class="upcoming-date">
+          18 SEP
+        </div>
+
+        <div class="upcoming-title">
+          🎨 School Colour Run
+        </div>
+
+        <div class="upcoming-detail">
+          Remember the white T-shirt.
+        </div>
+
+      </div>
+
+
+      <div class="upcoming">
+
+        <div class="upcoming-date">
+          3–5 OCT
+        </div>
+
+        <div class="upcoming-title">
+          🌊 Port Macquarie
+        </div>
+
+        <div class="upcoming-detail">
+          Family trip · Long weekend
+        </div>
+
+      </div>
+
+
+      <div class="upcoming">
+
+        <div class="upcoming-date">
+          THURSDAYS
+        </div>
+
+        <div class="upcoming-title">
+          🏊 Swimming
+        </div>
+
+        <div class="upcoming-detail">
+          Weekly · 6:00 PM
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<script>
+
+/* TODAY */
+
+const now = new Date();
+
+document.getElementById("todayDate").textContent =
+  now.toLocaleDateString(
+    "en-AU",
+    {
+      weekday: "long",
+      day: "numeric",
+      month: "long"
+    }
+  );
+
+document.getElementById("todayHeading").textContent =
+  now.toLocaleDateString(
+    "en-AU",
+    {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }
+  );
+
+
+/* CURRENT WEEK */
+
+function getMonday(date) {
+
+  const d = new Date(date);
+
+  const day = d.getDay();
+
+  const diff =
+    d.getDate() -
+    day +
+    (day === 0 ? -6 : 1);
+
+  d.setDate(diff);
+
+  d.setHours(0,0,0,0);
+
+  return d;
+}
+
+
+function sameDate(a,b) {
+
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+
+function renderWeek() {
+
+  const grid =
+    document.getElementById("weekGrid");
+
+  const monday =
+    getMonday(new Date());
+
+  const sampleEvents = {
+    0: [
+      {
+        text:"📚 Library Day",
+        className:"school"
+      }
+    ],
+
+    3: [
+      {
+        text:"🏊 6:00 PM Swimming",
+        className:"activity"
+      }
+    ],
+
+    4: [
+      {
+        text:"🎨 Colour Run",
+        className:"school"
+      },
+      {
+        text:"⚠️ White T-shirt",
+        className:"reminder"
+      }
+    ],
+
+    5: [
+      {
+        text:"🛒 Grocery shopping",
+        className:"family"
+      }
+    ]
+  };
+
+
+  let html = "";
+
+
+  for (let i=0; i<7; i++) {
+
+    const date =
+      new Date(monday);
+
+    date.setDate(
+      monday.getDate() + i
+    );
+
+
+    const events =
+      sampleEvents[i] || [];
+
+
+    html += `
+      <div class="day ${sameDate(date,now) ? "today" : ""}">
+
+        <div class="day-name">
+          ${date.toLocaleDateString("en-AU",{weekday:"short"})}
+        </div>
+
+        <div class="day-number">
+          ${date.getDate()}
+        </div>
+
+        ${events
+          .map(
+            event => `
+              <div class="event ${event.className}">
+                ${event.text}
+              </div>
+            `
+          )
+          .join("")
+        }
+
+      </div>
+    `;
+  }
+
+
+  grid.innerHTML =
+    html;
+}
+
+
+renderWeek();
+
+</script>
+
+</body>
+</html>
