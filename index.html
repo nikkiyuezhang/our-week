@@ -2790,76 +2790,80 @@ const sunday =
           }
         );
 
+html += `
+  <div
+    class="upcoming"
+    onclick="openMealModal('${currentDate}')"
+    style="cursor:pointer;"
+  >
 
-      html += `
-        <div class="upcoming">
-
-          <div class="upcoming-date">
-            ${dayName.toUpperCase()} ·
-            ${dateText.toUpperCase()}
-          </div>
+    <div class="upcoming-date">
+      ${dayName.toUpperCase()} ·
+      ${dateText.toUpperCase()}
+    </div>
 
 
-          <div class="upcoming-detail">
+    <div class="upcoming-detail">
 
-            <div>
-              🌅 <strong>Breakfast</strong><br>
-              ${
-                meal?.breakfast ||
-                "—"
-              }
-            </div>
+      <div>
+        🌅 <strong>Breakfast</strong><br>
+        ${
+          meal?.breakfast ||
+          "—"
+        }
+      </div>
 
+      <br>
+
+
+      <div>
+        🥪 <strong>Lunch</strong><br>
+        ${
+          meal?.lunch ||
+          "—"
+        }
+      </div>
+
+      <br>
+
+
+      <div>
+        🍎 <strong>Snack</strong><br>
+        ${
+          meal?.snack ||
+          "—"
+        }
+      </div>
+
+      <br>
+
+
+      <div>
+        🌙 <strong>Dinner</strong><br>
+        ${
+          meal?.dinner ||
+          "—"
+        }
+      </div>
+
+
+      ${
+        meal?.notes
+          ? `
             <br>
 
-
             <div>
-              🥪 <strong>Lunch</strong><br>
-              ${
-                meal?.lunch ||
-                "—"
-              }
+              📝 ${meal.notes}
             </div>
+          `
+          : ""
+      }
 
-            <br>
+    </div>
 
+  </div>
+`;
 
-            <div>
-              🍎 <strong>Snack</strong><br>
-              ${
-                meal?.snack ||
-                "—"
-              }
-            </div>
-
-            <br>
-
-
-            <div>
-              🌙 <strong>Dinner</strong><br>
-              ${
-                meal?.dinner ||
-                "—"
-              }
-            </div>
-
-
-            ${
-              meal?.notes
-                ? `
-                  <br>
-
-                  <div>
-                    📝 ${meal.notes}
-                  </div>
-                `
-                : ""
-            }
-
-          </div>
-
-        </div>
-      `;
 
     }
 
