@@ -2155,8 +2155,16 @@ async function openExistingEvent(id, occurrenceDate = null) {
 
   try {
 
-    const response = await fetch("/api/events");
-    const data = await response.json();
+const response =
+  await fetch(
+    "/api/events",
+    {
+      headers: {
+        "X-Family-Code":
+          getFamilyCode()
+      }
+    }
+  );    const data = await response.json();
 
     if (!data.success || !Array.isArray(data.events)) {
       return;
