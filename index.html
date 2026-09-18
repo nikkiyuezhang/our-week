@@ -2069,6 +2069,7 @@ async function renderTomorrow() {
 /* COMING UP */
 /* COMING UP */
 
+
 async function renderUpcoming() {
 
   const grid =
@@ -2093,25 +2094,146 @@ async function renderUpcoming() {
 
     const today = new Date();
 
-    const todayString =
-      today.getFullYear() + "-" +
-      String(today.getMonth() + 1).padStart(2, "0") + "-" +
-      String(today.getDate()).padStart(2, "0");
+    today.setHours(0, 0, 0, 0);
 
 
-    const upcomingEvents =
-      data.events
-        .filter(
-          event => event.start_date > todayString
+    const exceptions =
+      Array.isArray(data.exceptions)
+        ? data.exceptions
+        : [];
+
+
+    const upcomingEvents = [];
+
+
+    /* --------------------------------
+       BUILD UPCOMING EVENTS
+    -------------------------------- */
+
+    data.events.forEach(event => {
+
+      /*
+        NORMAL ONE-OFF EVENT
+      */
+
+      if (event.recurring !== "weekly") {
+
+        const eventDate =
+          new Date(event.start_date + "T00:00:00");
+
+        if (eventDate > today) {
+
+          upcomingEvents.push({
+            ...event,
+            occurrenceDate: event.start_date
+          });
+
+        }
+
+        return;
+      }
+
+
+      /*
+        WEEKLY RECURRING EVENT
+
+        Look ahead 8 weeks so recurring
+        events can appear in Coming Up.
+      */
+
+      const eventStart =
+        new Date(event.start_date + "T00:00:00");
+
+
+      for (let i = 1; i <= 56; i++) {
+
+        const occurrence =
+          new Date(today);
+
+        occurrence.setDate(
+          today.getDate() + i
+        );
+
+
+        /*
+          Must be after the original
+          recurring event start date.
+        */
+
+        if (occurrence < eventStart) {
+          continue;
+        }
+
+
+        /*
+          Must be the same weekday.
+        */
+
+        if (
+          occurrence.getDay() !==
+          eventStart.getDay()
+        ) {
+          continue;
+        }
+
+
+        const occurrenceString =
+          occurrence.getFullYear() + "-" +
+          String(
+            occurrence.getMonth() + 1
+          ).padStart(2, "0") + "-" +
+          String(
+            occurrence.getDate()
+          ).padStart(2, "0");
+
+
+        /*
+          Skip an occurrence that was
+          deleted individually.
+        */
+
+        const occurrenceDeleted =
+          exceptions.some(exception =>
+            Number(exception.event_id) === Number(event.id) &&
+            exception.exception_date === occurrenceString &&
+            exception.exception_type === "deleted"
+          );
+
+
+        if (occurrenceDeleted) {
+          continue;
+        }
+
+
+        upcomingEvents.push({
+          ...event,
+          start_date: occurrenceString,
+          end_date: null,
+          occurrenceDate: occurrenceString
+        });
+
+      }
+
+    });
+
+
+    /* --------------------------------
+       SORT + SHOW NEXT 6
+    -------------------------------- */
+
+    upcomingEvents.sort(
+      (a, b) =>
+        a.start_date.localeCompare(
+          b.start_date
         )
-        .sort(
-          (a, b) =>
-            a.start_date.localeCompare(b.start_date)
-        )
-        .slice(0, 6);
+    );
 
 
-    if (upcomingEvents.length === 0) {
+    const visibleEvents =
+      upcomingEvents.slice(0, 6);
+
+
+    if (visibleEvents.length === 0) {
 
       grid.innerHTML = `
         <div class="upcoming">
@@ -2131,8 +2253,12 @@ async function renderUpcoming() {
     }
 
 
+    /* --------------------------------
+       DISPLAY
+    -------------------------------- */
+
     grid.innerHTML =
-      upcomingEvents.map(event => {
+      visibleEvents.map(event => {
 
         let emoji = "📌";
 
@@ -2159,6 +2285,11 @@ async function renderUpcoming() {
             )
             .toUpperCase();
 
+
+        /*
+          Keep date ranges for normal
+          multi-day events.
+        */
 
         if (
           event.end_date &&
@@ -2232,7 +2363,12 @@ async function renderUpcoming() {
         return `
           <div
             class="upcoming"
-            onclick="openExistingEvent(${event.id})"
+            data-event-id="${event.id}"
+            data-occurrence-date="${event.occurrenceDate}"
+            onclick="openExistingEvent(
+              this.dataset.eventId,
+              this.dataset.occurrenceDate
+            )"
             style="cursor:pointer;"
           >
 
@@ -2276,8 +2412,11 @@ async function renderUpcoming() {
 
       </div>
     `;
+
   }
+
 }
+  
 
 
 /* START */
