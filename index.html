@@ -1445,7 +1445,133 @@ function closeMealModal() {
 
 }
 
+async function saveMeal() {
 
+  const button =
+    document.getElementById("saveMealButton");
+
+  const message =
+    document.getElementById("mealFormMessage");
+
+
+  const mealDate =
+    document.getElementById("mealDate").value;
+
+  const breakfast =
+    document.getElementById("mealBreakfast").value.trim();
+
+  const lunch =
+    document.getElementById("mealLunch").value.trim();
+
+  const snack =
+    document.getElementById("mealSnack").value.trim();
+
+  const dinner =
+    document.getElementById("mealDinner").value.trim();
+
+  const notes =
+    document.getElementById("mealNotes").value.trim();
+
+
+  if (!mealDate) {
+
+    message.textContent =
+      "Please select a date.";
+
+    message.style.display =
+      "block";
+
+    return;
+  }
+
+
+  button.disabled = true;
+  button.textContent = "Saving...";
+
+  message.style.display = "none";
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/meal-plan",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            meal_date: mealDate,
+            breakfast: breakfast,
+            lunch: lunch,
+            snack: snack,
+            dinner: dinner,
+            notes: notes
+          })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!data.success) {
+
+      throw new Error(
+        data.error ||
+        "Could not save meal plan."
+      );
+
+    }
+
+
+    message.textContent =
+      "Saved ✓";
+
+    message.style.display =
+      "block";
+
+
+    renderMealPlan();
+
+
+    setTimeout(() => {
+
+      closeMealModal();
+
+    }, 500);
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not save meal plan:",
+      error
+    );
+
+
+    message.textContent =
+      "Could not save meal plan.";
+
+    message.style.display =
+      "block";
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      "Save Meal Plan";
+
+  }
+
+}
 function openEventModal() {
 
   editingEventId = null;
