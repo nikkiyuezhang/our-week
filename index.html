@@ -1000,16 +1000,49 @@ async function renderWeek() {
       return;
     }
 
+/*
+  WHICH DAY OF DISPLAYED WEEK?
 
-    /*
-      WHICH DAY OF DISPLAYED WEEK?
-    */
+  Compare calendar dates directly
+  so daylight saving does not affect
+  the day position.
+*/
 
-    const dayIndex =
-      Math.round(
-        (eventDate - monday) /
-        (1000 * 60 * 60 * 24)
-      );
+let dayIndex = -1;
+
+const eventDateString =
+  [
+    eventDate.getFullYear(),
+    String(eventDate.getMonth() + 1).padStart(2, "0"),
+    String(eventDate.getDate()).padStart(2, "0")
+  ].join("-");
+
+
+for (let i = 0; i < 7; i++) {
+
+  const weekDate =
+    new Date(monday);
+
+  weekDate.setDate(
+    monday.getDate() + i
+  );
+
+  const weekDateString =
+    [
+      weekDate.getFullYear(),
+      String(weekDate.getMonth() + 1).padStart(2, "0"),
+      String(weekDate.getDate()).padStart(2, "0")
+    ].join("-");
+
+
+  if (weekDateString === eventDateString) {
+
+    dayIndex = i;
+    break;
+
+  }
+
+}
 
 
     if (
