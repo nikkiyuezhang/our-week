@@ -3512,6 +3512,95 @@ renderUpcoming();
   </div>
 
 </div>
-  
+  <!-- FAMILY CODE MODAL -->
+
+<div
+  id="familyCodeModal"
+  style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  "
+>
+
+  <div
+    style="
+      background:white;
+      width:100%;
+      max-width:380px;
+      border-radius:18px;
+      padding:28px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.25);
+    "
+  >
+
+    <div
+      style="
+        font-size:24px;
+        font-weight:700;
+        margin-bottom:8px;
+      "
+    >
+      🔒 Our Week
+    </div>
+
+    <div
+      style="
+        margin-bottom:20px;
+        opacity:0.7;
+      "
+    >
+      Enter your Family Code to continue.
+    </div>
+
+    <input
+      id="familyCodeInput"
+      type="password"
+      placeholder="Family Code"
+      autocomplete="current-password"
+      style="
+        width:100%;
+        box-sizing:border-box;
+        padding:13px 14px;
+        border:1px solid #ddd;
+        border-radius:10px;
+        font-size:16px;
+        margin-bottom:12px;
+      "
+    >
+
+    <div
+      id="familyCodeMessage"
+      style="
+        display:none;
+        margin-bottom:12px;
+        font-size:14px;
+      "
+    ></div>
+
+    <button
+      type="button"
+      onclick="submitFamilyCode()"
+      style="
+        width:100%;
+        padding:13px;
+        border:0;
+        border-radius:10px;
+        font-size:16px;
+        font-weight:700;
+        cursor:pointer;
+      "
+    >
+      Enter Our Week
+    </button>
+
+  </div>
+
+</div>
 </body>
 </html>
