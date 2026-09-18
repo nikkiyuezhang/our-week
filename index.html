@@ -1313,9 +1313,7 @@ function goToCurrentWeek() {
   renderMealPlan();
 } 
 
-
-  
-function openMealModal(date) {
+async function openMealModal(date) {
 
   const modal =
     document.getElementById("mealModal");
@@ -1345,6 +1343,10 @@ function openMealModal(date) {
     );
 
 
+  /*
+    CLEAR OLD VALUES FIRST
+  */
+
   document.getElementById("mealBreakfast").value = "";
   document.getElementById("mealLunch").value = "";
   document.getElementById("mealSnack").value = "";
@@ -1357,8 +1359,82 @@ function openMealModal(date) {
   ).style.display = "none";
 
 
+  /*
+    OPEN MODAL
+  */
+
   modal.style.display = "flex";
+
+
+  /*
+    LOAD SAVED MEAL FOR THIS DATE
+  */
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/meal-plan?start=" +
+        date +
+        "&end=" +
+        date
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      data.success &&
+      Array.isArray(data.meals) &&
+      data.meals.length > 0
+    ) {
+
+      const meal =
+        data.meals[0];
+
+
+      document.getElementById(
+        "mealBreakfast"
+      ).value = meal.breakfast || "";
+
+
+      document.getElementById(
+        "mealLunch"
+      ).value = meal.lunch || "";
+
+
+      document.getElementById(
+        "mealSnack"
+      ).value = meal.snack || "";
+
+
+      document.getElementById(
+        "mealDinner"
+      ).value = meal.dinner || "";
+
+
+      document.getElementById(
+        "mealNotes"
+      ).value = meal.notes || "";
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not load meal:",
+      error
+    );
+
+  }
+
 }
+  
+
+  
 
 
 function closeMealModal() {
