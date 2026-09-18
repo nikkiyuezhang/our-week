@@ -779,7 +779,7 @@ function clearFamilyCode() {
   );
 
 }
-  function submitFamilyCode() {
+async function submitFamilyCode() {
 
   const input =
     document.getElementById(
@@ -807,15 +807,69 @@ function clearFamilyCode() {
   }
 
 
-  saveFamilyCode(code);
+  message.textContent =
+    "Checking...";
+
+  message.style.display =
+    "block";
 
 
-  document.getElementById(
-    "familyCodeModal"
-  ).style.display = "none";
+  try {
+
+    const response =
+      await fetch(
+        "/api/family-auth",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            code: code
+          })
+        }
+      );
 
 
-  message.style.display = "none";
+    const data =
+      await response.json();
+
+
+    if (!data.success) {
+
+      message.textContent =
+        "Incorrect Family Code.";
+
+      return;
+    }
+
+
+    saveFamilyCode(code);
+
+
+    document.getElementById(
+      "familyCodeModal"
+    ).style.display = "none";
+
+
+    message.style.display =
+      "none";
+
+
+  } catch (error) {
+
+    console.error(
+      "Family Code verification failed:",
+      error
+    );
+
+    message.textContent =
+      "Could not verify Family Code.";
+
+  }
 
 }
 function checkFamilyLogin() {
