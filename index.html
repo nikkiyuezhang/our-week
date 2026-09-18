@@ -2623,11 +2623,15 @@ async function renderUpcoming() {
       MONDAY → SUNDAY
     */
 
-    const monday =
-      getMonday(new Date());
+   const monday =
+  getMonday(new Date());
 
-    const sunday =
-      new Date(monday);
+monday.setDate(
+  monday.getDate() + (weekOffset * 7)
+);
+
+const sunday =
+  new Date(monday);
 
     sunday.setDate(
       monday.getDate() + 6
