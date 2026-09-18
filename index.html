@@ -1349,7 +1349,6 @@ async function openMealModal(date) {
 
   document.getElementById("mealBreakfast").value = "";
   document.getElementById("mealLunch").value = "";
-  document.getElementById("mealSnack").value = "";
   document.getElementById("mealDinner").value = "";
   document.getElementById("mealNotes").value = "";
 
@@ -1406,11 +1405,6 @@ async function openMealModal(date) {
 
 
       document.getElementById(
-        "mealSnack"
-      ).value = meal.snack || "";
-
-
-      document.getElementById(
         "mealDinner"
       ).value = meal.dinner || "";
 
@@ -1463,9 +1457,6 @@ async function saveMeal() {
   const lunch =
     document.getElementById("mealLunch").value.trim();
 
-  const snack =
-    document.getElementById("mealSnack").value.trim();
-
   const dinner =
     document.getElementById("mealDinner").value.trim();
 
@@ -1508,7 +1499,6 @@ async function saveMeal() {
             meal_date: mealDate,
             breakfast: breakfast,
             lunch: lunch,
-            snack: snack,
             dinner: dinner,
             notes: notes
           })
