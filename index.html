@@ -778,6 +778,7 @@ function sameDate(a,b) {
   );
 }
 
+
 async function renderWeek() {
 
   const grid =
@@ -791,55 +792,6 @@ async function renderWeek() {
   );
 
   const sampleEvents = {};
-
-
-  /*
-    LOCAL DATE STRING
-    Avoid DST / timezone day calculations
-  */
-
-  function localDateString(date) {
-
-    return [
-      date.getFullYear(),
-      String(date.getMonth() + 1).padStart(2, "0"),
-      String(date.getDate()).padStart(2, "0")
-    ].join("-");
-
-  }
-
-
-  /*
-    FIND DATE INSIDE DISPLAYED WEEK
-
-    Instead of calculating milliseconds,
-    compare YYYY-MM-DD directly.
-  */
-
-  function getDayIndex(date) {
-
-    const target =
-      localDateString(date);
-
-    for (let i = 0; i < 7; i++) {
-
-      const weekDate =
-        new Date(monday);
-
-      weekDate.setDate(
-        monday.getDate() + i
-      );
-
-      if (
-        localDateString(weekDate) === target
-      ) {
-        return i;
-      }
-
-    }
-
-    return -1;
-  }
 
 
   try {
@@ -859,204 +811,6 @@ async function renderWeek() {
           : [];
 
 
-      /*
-        ADD ONE EVENT OCCURRENCE
-        TO THE DISPLAYED WEEK
-      */
-
-      function addEventToWeek(
-        event,
-        eventDate,
-        isMultiDay = false,
-        dayNumber = null,
-        totalDays = null
-      ) {
-
-        const occurrenceDate =
-          localDateString(eventDate);
-
-
-        /*
-          DELETED OCCURRENCE
-        */
-
-        const occurrenceDeleted =
-          exceptions.some(exception =>
-
-            Number(exception.event_id) ===
-              Number(event.id) &&
-
-            exception.exception_date ===
-              occurrenceDate &&
-
-            exception.exception_type ===
-              "deleted"
-
-          );
-
-
-        if (occurrenceDeleted) {
-          return;
-        }
-
-
-        /*
-          FIND DAY IN CURRENT WEEK
-        */
-
-        const dayIndex =
-          getDayIndex(eventDate);
-
-
-        if (dayIndex === -1) {
-          return;
-        }
-
-
-        if (!sampleEvents[dayIndex]) {
-          sampleEvents[dayIndex] = [];
-        }
-
-
-        /*
-          CATEGORY ICON
-        */
-
-        let emoji = "📌";
-
-        if (event.category === "school") {
-          emoji = "🎒";
-        }
-
-        if (event.category === "activity") {
-          emoji = "🏊";
-        }
-
-        if (event.category === "family") {
-          emoji = "👨‍👩‍👧";
-        }
-
-        if (event.category === "travel") {
-          emoji = "✈️";
-        }
-
-
-        /*
-          TIME
-
-          Multi-day event:
-          show start time only on Day 1.
-        */
-
-        let timeText = "";
-
-        if (
-          event.start_time &&
-          (!isMultiDay || dayNumber === 1)
-        ) {
-
-          const [hour, minute] =
-            event.start_time.split(":");
-
-          const tempDate =
-            new Date();
-
-          tempDate.setHours(
-            Number(hour),
-            Number(minute)
-          );
-
-          timeText =
-            tempDate.toLocaleTimeString(
-              "en-AU",
-              {
-                hour: "numeric",
-                minute: "2-digit"
-              }
-            ) + " ";
-
-        }
-
-
-        /*
-          MULTI-DAY LABEL
-        */
-
-        let multiDayText = "";
-
-        if (isMultiDay) {
-
-          multiDayText =
-            " · Day " +
-            dayNumber +
-            " of " +
-            totalDays;
-
-        }
-
-
-        /*
-          MAIN EVENT
-        */
-
-        sampleEvents[dayIndex].push({
-
-          text:
-            emoji +
-            " " +
-            timeText +
-            event.title +
-            (
-              event.recurring === "weekly"
-                ? " ↻"
-                : ""
-            ) +
-            multiDayText,
-
-          className:
-            event.category,
-
-          eventId:
-            event.id,
-
-          occurrenceDate:
-            occurrenceDate
-
-        });
-
-
-        /*
-          PREPARE
-
-          For multi-day events,
-          only show on Day 1.
-        */
-
-        if (
-          event.prepare &&
-          (!isMultiDay || dayNumber === 1)
-        ) {
-
-          sampleEvents[dayIndex].push({
-
-            text:
-              "⚠️ " +
-              event.prepare,
-
-            className:
-              "reminder"
-
-          });
-
-        }
-
-      }
-
-
-      /*
-        PROCESS EVENTS
-      */
-
       data.events.forEach(event => {
 
         const originalDate =
@@ -1071,50 +825,42 @@ async function renderWeek() {
 
         if (event.recurring === "weekly") {
 
-          for (let i = 0; i < 7; i++) {
+          const targetWeekday =
+            originalDate.getDay();
 
-            const weekDate =
-              new Date(monday);
+          const eventDate =
+            new Date(monday);
 
-            weekDate.setDate(
-              monday.getDate() + i
-            );
+          const mondayWeekday =
+            monday.getDay();
 
+          let difference =
+            targetWeekday - mondayWeekday;
 
-            /*
-              Same weekday
-            */
-
-            if (
-              weekDate.getDay() !==
-              originalDate.getDay()
-            ) {
-              continue;
-            }
-
-
-            /*
-              Not before original start date
-
-              Compare date strings rather than
-              milliseconds.
-            */
-
-            if (
-              localDateString(weekDate) <
-              event.start_date
-            ) {
-              continue;
-            }
-
-
-            addEventToWeek(
-              event,
-              weekDate
-            );
-
+          if (difference < 0) {
+            difference += 7;
           }
 
+          eventDate.setDate(
+            monday.getDate() + difference
+          );
+
+
+          /*
+            DO NOT SHOW BEFORE
+            ORIGINAL START DATE
+          */
+
+          if (eventDate < originalDate) {
+            return;
+          }
+
+
+          addEventToWeek(
+            event,
+            eventDate,
+            false
+          );
 
           return;
         }
@@ -1124,7 +870,7 @@ async function renderWeek() {
           NORMAL / MULTI-DAY EVENT
         */
 
-        let finalEndDate =
+        const endDate =
           event.end_date
             ? new Date(
                 event.end_date + "T00:00:00"
@@ -1133,68 +879,56 @@ async function renderWeek() {
 
 
         /*
-          Invalid end date:
+          SAFETY:
+          if end date is before start date,
           treat as one-day event
         */
 
-        if (
-          localDateString(finalEndDate) <
-          event.start_date
-        ) {
+        const finalEndDate =
+          endDate < originalDate
+            ? new Date(originalDate)
+            : endDate;
 
-          finalEndDate =
-            new Date(originalDate);
 
-        }
+        const totalDays =
+          Math.round(
+            (finalEndDate - originalDate) /
+            (1000 * 60 * 60 * 24)
+          ) + 1;
 
 
         /*
-          BUILD EACH CALENDAR DAY
-
-          IMPORTANT:
-          setDate() moves by local calendar day,
-          so DST does not break the sequence.
+          ADD EVENT TO EACH DAY
+          FROM START TO END
         */
-
-        const eventDates = [];
 
         const currentDate =
           new Date(originalDate);
 
 
-        while (
-          localDateString(currentDate) <=
-          localDateString(finalEndDate)
-        ) {
+        while (currentDate <= finalEndDate) {
 
-          eventDates.push(
-            new Date(currentDate)
+          const dayNumber =
+            Math.round(
+              (currentDate - originalDate) /
+              (1000 * 60 * 60 * 24)
+            ) + 1;
+
+
+          addEventToWeek(
+            event,
+            new Date(currentDate),
+            totalDays > 1,
+            dayNumber,
+            totalDays
           );
+
 
           currentDate.setDate(
             currentDate.getDate() + 1
           );
 
         }
-
-
-        const totalDays =
-          eventDates.length;
-
-
-        eventDates.forEach(
-          (eventDate, index) => {
-
-            addEventToWeek(
-              event,
-              eventDate,
-              totalDays > 1,
-              index + 1,
-              totalDays
-            );
-
-          }
-        );
 
       });
 
@@ -1212,77 +946,188 @@ async function renderWeek() {
 
 
   /*
-    BUILD WEEK
+    HELPER:
+    ADD ONE OCCURRENCE TO WEEK
   */
 
-  let html = "";
+  function addEventToWeek(
+    event,
+    eventDate,
+    isMultiDay = false,
+    dayNumber = null,
+    totalDays = null
+  ) {
+
+    /*
+      CREATE OCCURRENCE DATE
+    */
+
+    const occurrenceDate =
+      [
+        eventDate.getFullYear(),
+        String(
+          eventDate.getMonth() + 1
+        ).padStart(2, "0"),
+        String(
+          eventDate.getDate()
+        ).padStart(2, "0")
+      ].join("-");
 
 
-  for (let i = 0; i < 7; i++) {
+    /*
+      CHECK DELETED WEEKLY OCCURRENCE
 
-    const date =
-      new Date(monday);
+      This mainly applies to recurring
+      events, but is safe for all events.
+    */
 
-    date.setDate(
-      monday.getDate() + i
-    );
+    const occurrenceDeleted =
+      exceptions.some(exception =>
 
+        Number(exception.event_id) ===
+          Number(event.id) &&
 
-    const events =
-      sampleEvents[i] || [];
+        exception.exception_date ===
+          occurrenceDate &&
 
+        exception.exception_type ===
+          "deleted"
 
-    html += `
-      <div class="day ${sameDate(date, now) ? "today" : ""}">
-
-        <div class="day-name">
-          ${date.toLocaleDateString(
-            "en-AU",
-            {
-              weekday: "short"
-            }
-          )}
-        </div>
-
-        <div class="day-number">
-          ${date.getDate()}
-        </div>
+      );
 
 
-        ${events
-          .map(
-            event => `
-              <div
-                class="event ${event.className}"
-                ${
-                  event.eventId
-                    ? `
-                      data-event-id="${event.eventId}"
-                      data-occurrence-date="${event.occurrenceDate}"
-                      onclick="openExistingEvent(
-                        this.dataset.eventId,
-                        this.dataset.occurrenceDate
-                      )"
-                      style="cursor:pointer;"
-                    `
-                    : ""
-                }
-              >
-                ${event.text}
-              </div>
-            `
-          )
-          .join("")
-        }
-
-      </div>
-    `;
-  }
+    if (occurrenceDeleted) {
+      return;
+    }
 
 
-  grid.innerHTML =
-    html;
-}
+    /*
+      WHICH DAY OF DISPLAYED WEEK?
+    */
+
+    const dayIndex =
+      Math.round(
+        (eventDate - monday) /
+        (1000 * 60 * 60 * 24)
+      );
+
+
+    if (
+      dayIndex < 0 ||
+      dayIndex > 6
+    ) {
+      return;
+    }
+
+
+    if (!sampleEvents[dayIndex]) {
+      sampleEvents[dayIndex] = [];
+    }
+
+
+    /*
+      CATEGORY ICON
+    */
+
+    let emoji = "📌";
+
+    if (event.category === "school") {
+      emoji = "🎒";
+    }
+
+    if (event.category === "activity") {
+      emoji = "🏊";
+    }
+
+    if (event.category === "family") {
+      emoji = "👨‍👩‍👧";
+    }
+
+    if (event.category === "travel") {
+      emoji = "✈️";
+    }
+
+
+    /*
+      TIME
+
+      For multi-day events, only show
+      start time on Day 1.
+    */
+
+    let timeText = "";
+
+    if (
+      event.start_time &&
+      (!isMultiDay || dayNumber === 1)
+    ) {
+
+      const [hour, minute] =
+        event.start_time.split(":");
+
+      const tempDate =
+        new Date();
+
+      tempDate.setHours(
+        Number(hour),
+        Number(minute)
+      );
+
+      timeText =
+        tempDate.toLocaleTimeString(
+          "en-AU",
+          {
+            hour: "numeric",
+            minute: "2-digit"
+          }
+        ) + " ";
+    }
+
+
+    /*
+      DAY X OF Y
+    */
+
+    let multiDayText = "";
+
+    if (isMultiDay) {
+
+      multiDayText =
+        " · Day " +
+        dayNumber +
+        " of " +
+        totalDays;
+    }
+
+
+    /*
+      MAIN EVENT
+    */
+
+    sampleEvents[dayIndex].push({
+
+      text:
+        emoji +
+        " " +
+        timeText +
+        event.title +
+        (
+          event.recurring === "weekly"
+            ? " ↻"
+            : ""
+        ) +
+        multiDayText,
+
+      className:
+        event.category,
+
+      eventId:
+        event.id,
+
+      occurrenceDate:
+        occurrenceDate
+    });
+
 
     /*
       PREPARE REMINDER
