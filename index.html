@@ -1296,20 +1296,25 @@ for (let i = 0; i < 7; i++) {
 }
 
 
-  
-
-function changeWeek(direction) {
+ function changeWeek(direction) {
 
   weekOffset += direction;
 
   renderWeek();
+  renderMealPlan();
 }
-  function goToCurrentWeek() {
+
+
+function goToCurrentWeek() {
 
   weekOffset = 0;
 
   renderWeek();
-}
+  renderMealPlan();
+} 
+
+
+  
 function openEventModal() {
 editingEventId = null;
   document.getElementById("eventTitle").value = "";
