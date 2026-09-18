@@ -1368,8 +1368,11 @@ function closeMealModal() {
   ).style.display = "none";
 
 }
-  
-editingEventId = null;
+
+
+function openEventModal() {
+
+  editingEventId = null;
   document.getElementById("eventTitle").value = "";
 document.getElementById("eventCategory").value = "family";
 const today = new Date();
