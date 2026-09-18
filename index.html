@@ -964,8 +964,16 @@ let exceptions = [];
   
   try {
 
-    const response =
-      await fetch("/api/events");
+const response =
+  await fetch(
+    "/api/events",
+    {
+      headers: {
+        "X-Family-Code":
+          getFamilyCode()
+      }
+    }
+  );
 
     const data =
       await response.json();
