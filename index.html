@@ -1315,7 +1315,60 @@ function goToCurrentWeek() {
 
 
   
-function openEventModal() {
+function openMealModal(date) {
+
+  const modal =
+    document.getElementById("mealModal");
+
+  const mealDate =
+    document.getElementById("mealDate");
+
+  const dateLabel =
+    document.getElementById("mealModalDateLabel");
+
+
+  mealDate.value = date;
+
+
+  const selectedDate =
+    new Date(date + "T00:00:00");
+
+
+  dateLabel.textContent =
+    selectedDate.toLocaleDateString(
+      "en-AU",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      }
+    );
+
+
+  document.getElementById("mealBreakfast").value = "";
+  document.getElementById("mealLunch").value = "";
+  document.getElementById("mealSnack").value = "";
+  document.getElementById("mealDinner").value = "";
+  document.getElementById("mealNotes").value = "";
+
+
+  document.getElementById(
+    "mealFormMessage"
+  ).style.display = "none";
+
+
+  modal.style.display = "flex";
+}
+
+
+function closeMealModal() {
+
+  document.getElementById(
+    "mealModal"
+  ).style.display = "none";
+
+}
+  
 editingEventId = null;
   document.getElementById("eventTitle").value = "";
 document.getElementById("eventCategory").value = "family";
