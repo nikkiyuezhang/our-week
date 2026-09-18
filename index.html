@@ -818,6 +818,22 @@ function clearFamilyCode() {
   message.style.display = "none";
 
 }
+function checkFamilyLogin() {
+
+  const code =
+    getFamilyCode();
+
+  if (!code) {
+
+    document.getElementById(
+      "familyCodeModal"
+    ).style.display = "flex";
+
+  }
+
+}
+
+  
 let editingEventId = null;
   let editingOccurrenceDate = null;
   let weekOffset = 0;
@@ -3142,6 +3158,7 @@ html += `
 
 
 /* START */
+checkFamilyLogin();
 
 renderWeek();
 renderToday();
