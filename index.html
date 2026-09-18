@@ -3061,5 +3061,209 @@ renderUpcoming();
   </div>
 
 </div>
+
+<!-- MEAL PLAN MODAL -->
+
+<div id="mealModal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:1000;
+  padding:20px;
+  align-items:center;
+  justify-content:center;
+">
+
+  <div style="
+    background:white;
+    width:100%;
+    max-width:520px;
+    border-radius:20px;
+    padding:24px;
+    max-height:90vh;
+    overflow:auto;
+  ">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:20px;
+    ">
+
+      <div>
+        <div style="font-size:21px;font-weight:700;">
+          🍽️ Meal Plan
+        </div>
+
+        <div
+          id="mealModalDateLabel"
+          style="
+            margin-top:4px;
+            font-size:14px;
+            color:#68736d;
+          "
+        >
+          Select a day
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onclick="closeMealModal()"
+        style="
+          border:0;
+          background:none;
+          font-size:25px;
+          cursor:pointer;
+        "
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <input
+      id="mealDate"
+      type="hidden"
+    >
+
+
+    <div style="margin-bottom:14px;">
+      <label>
+        <strong>🌅 Breakfast</strong>
+      </label>
+
+      <input
+        id="mealBreakfast"
+        type="text"
+        placeholder="What are we having for breakfast?"
+        style="
+          width:100%;
+          padding:11px;
+          margin-top:6px;
+          border:1px solid #ddd;
+          border-radius:9px;
+        "
+      >
+    </div>
+
+
+    <div style="margin-bottom:14px;">
+      <label>
+        <strong>🥪 Lunch</strong>
+      </label>
+
+      <input
+        id="mealLunch"
+        type="text"
+        placeholder="What's for lunch?"
+        style="
+          width:100%;
+          padding:11px;
+          margin-top:6px;
+          border:1px solid #ddd;
+          border-radius:9px;
+        "
+      >
+    </div>
+
+
+    <div style="margin-bottom:14px;">
+      <label>
+        <strong>🍎 Snack</strong>
+      </label>
+
+      <input
+        id="mealSnack"
+        type="text"
+        placeholder="Snack for the day"
+        style="
+          width:100%;
+          padding:11px;
+          margin-top:6px;
+          border:1px solid #ddd;
+          border-radius:9px;
+        "
+      >
+    </div>
+
+
+    <div style="margin-bottom:14px;">
+      <label>
+        <strong>🌙 Dinner</strong>
+      </label>
+
+      <input
+        id="mealDinner"
+        type="text"
+        placeholder="What's for dinner?"
+        style="
+          width:100%;
+          padding:11px;
+          margin-top:6px;
+          border:1px solid #ddd;
+          border-radius:9px;
+        "
+      >
+    </div>
+
+
+    <div style="margin-bottom:20px;">
+      <label>
+        <strong>📝 Notes</strong>
+      </label>
+
+      <textarea
+        id="mealNotes"
+        rows="3"
+        placeholder="Prep, ingredients or anything to remember..."
+        style="
+          width:100%;
+          padding:11px;
+          margin-top:6px;
+          border:1px solid #ddd;
+          border-radius:9px;
+          resize:vertical;
+        "
+      ></textarea>
+    </div>
+
+
+    <div
+      id="mealFormMessage"
+      style="
+        display:none;
+        margin-bottom:12px;
+        font-size:14px;
+      "
+    ></div>
+
+
+    <button
+      type="button"
+      id="saveMealButton"
+      onclick="saveMeal()"
+      style="
+        width:100%;
+        border:0;
+        background:#375b4a;
+        color:white;
+        padding:12px;
+        border-radius:10px;
+        font-weight:700;
+        font-size:15px;
+        cursor:pointer;
+      "
+    >
+      Save Meal Plan
+    </button>
+
+  </div>
+
+</div>
+  
 </body>
 </html>
