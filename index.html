@@ -1547,7 +1547,6 @@ async function openExistingEvent(id, occurrenceDate = null) {
   }
 }
 
-  
   async function renderToday() {
 
   const grid = document.getElementById("todayGrid");
@@ -1563,6 +1562,11 @@ async function openExistingEvent(id, occurrenceDate = null) {
       return;
     }
 
+
+    /* -----------------------------
+       TODAY
+    ----------------------------- */
+
     const today = new Date();
 
     const todayString =
@@ -1570,10 +1574,82 @@ async function openExistingEvent(id, occurrenceDate = null) {
       String(today.getMonth() + 1).padStart(2, "0") + "-" +
       String(today.getDate()).padStart(2, "0");
 
+
+    /* -----------------------------
+       DELETED OCCURRENCES
+    ----------------------------- */
+
+    const exceptions =
+      Array.isArray(data.exceptions)
+        ? data.exceptions
+        : [];
+
+
+    /* -----------------------------
+       FIND TODAY'S EVENTS
+    ----------------------------- */
+
     const todayEvents =
-      data.events.filter(
-        event => event.start_date === todayString
-      );
+      data.events.filter(event => {
+
+        /* Normal one-off event */
+
+        if (event.recurring !== "weekly") {
+
+          return event.start_date === todayString;
+
+        }
+
+
+        /* Weekly recurring event */
+
+        const eventStart =
+          new Date(event.start_date + "T00:00:00");
+
+        /*
+          Recurring event has not started yet
+        */
+
+        if (today < eventStart) {
+          return false;
+        }
+
+
+        /*
+          Must be the same weekday
+        */
+
+        if (today.getDay() !== eventStart.getDay()) {
+          return false;
+        }
+
+
+        /*
+          Check whether this occurrence
+          was deleted
+        */
+
+        const occurrenceDeleted =
+          exceptions.some(exception =>
+            Number(exception.event_id) === Number(event.id) &&
+            exception.exception_date === todayString &&
+            exception.exception_type === "deleted"
+          );
+
+
+        if (occurrenceDeleted) {
+          return false;
+        }
+
+
+        return true;
+
+      });
+
+
+    /* -----------------------------
+       NOTHING TODAY
+    ----------------------------- */
 
     if (todayEvents.length === 0) {
 
@@ -1598,6 +1674,10 @@ async function openExistingEvent(id, occurrenceDate = null) {
       return;
     }
 
+
+    /* -----------------------------
+       DISPLAY TODAY'S EVENTS
+    ----------------------------- */
 
     grid.innerHTML =
       todayEvents.map(event => {
@@ -1638,7 +1718,12 @@ async function openExistingEvent(id, occurrenceDate = null) {
         return `
           <div
             class="today-card"
-            onclick="openExistingEvent(${event.id})"
+            data-event-id="${event.id}"
+            data-occurrence-date="${todayString}"
+            onclick="openExistingEvent(
+              this.dataset.eventId,
+              this.dataset.occurrenceDate
+            )"
             style="cursor:pointer;"
           >
 
@@ -1686,7 +1771,12 @@ async function openExistingEvent(id, occurrenceDate = null) {
     );
 
   }
+
 }
+
+
+
+  
 
 /* TOMORROW */
 
