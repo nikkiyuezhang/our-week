@@ -2255,7 +2255,6 @@ async function renderTomorrow() {
 
 
 /* COMING UP */
-/* COMING UP */
 
 
 async function renderUpcoming() {
@@ -2604,7 +2603,227 @@ async function renderUpcoming() {
   }
 
 }
-  
+  async function renderMealPlan() {
+
+  const grid =
+    document.getElementById("mealPlanGrid");
+
+  if (!grid) return;
+
+
+  try {
+
+    /*
+      WORK OUT THIS WEEK
+      MONDAY → SUNDAY
+    */
+
+    const monday =
+      getMonday(new Date());
+
+    const sunday =
+      new Date(monday);
+
+    sunday.setDate(
+      monday.getDate() + 6
+    );
+
+
+    function dateString(date) {
+
+      return (
+        date.getFullYear() + "-" +
+        String(
+          date.getMonth() + 1
+        ).padStart(2, "0") + "-" +
+        String(
+          date.getDate()
+        ).padStart(2, "0")
+      );
+
+    }
+
+
+    const startDate =
+      dateString(monday);
+
+    const endDate =
+      dateString(sunday);
+
+
+    /*
+      LOAD THIS WEEK'S MEALS
+    */
+
+    const response =
+      await fetch(
+        "/api/meal-plan?start=" +
+        startDate +
+        "&end=" +
+        endDate
+      );
+
+    const data =
+      await response.json();
+
+
+    if (
+      !data.success ||
+      !Array.isArray(data.meals)
+    ) {
+
+      throw new Error(
+        "Could not load meal plan."
+      );
+
+    }
+
+
+    /*
+      BUILD 7 DAYS
+    */
+
+    let html = "";
+
+
+    for (let i = 0; i < 7; i++) {
+
+      const date =
+        new Date(monday);
+
+      date.setDate(
+        monday.getDate() + i
+      );
+
+
+      const currentDate =
+        dateString(date);
+
+
+      const meal =
+        data.meals.find(
+          item =>
+            item.meal_date === currentDate
+        );
+
+
+      const dayName =
+        date.toLocaleDateString(
+          "en-AU",
+          {
+            weekday: "short"
+          }
+        );
+
+
+      const dateText =
+        date.toLocaleDateString(
+          "en-AU",
+          {
+            day: "numeric",
+            month: "short"
+          }
+        );
+
+
+      html += `
+        <div class="upcoming">
+
+          <div class="upcoming-date">
+            ${dayName.toUpperCase()} ·
+            ${dateText.toUpperCase()}
+          </div>
+
+
+          <div class="upcoming-detail">
+
+            <div>
+              🌅 <strong>Breakfast</strong><br>
+              ${
+                meal?.breakfast ||
+                "—"
+              }
+            </div>
+
+            <br>
+
+
+            <div>
+              🥪 <strong>Lunch</strong><br>
+              ${
+                meal?.lunch ||
+                "—"
+              }
+            </div>
+
+            <br>
+
+
+            <div>
+              🍎 <strong>Snack</strong><br>
+              ${
+                meal?.snack ||
+                "—"
+              }
+            </div>
+
+            <br>
+
+
+            <div>
+              🌙 <strong>Dinner</strong><br>
+              ${
+                meal?.dinner ||
+                "—"
+              }
+            </div>
+
+
+            ${
+              meal?.notes
+                ? `
+                  <br>
+
+                  <div>
+                    📝 ${meal.notes}
+                  </div>
+                `
+                : ""
+            }
+
+          </div>
+
+        </div>
+      `;
+
+    }
+
+
+    grid.innerHTML =
+      html;
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not load meal plan:",
+      error
+    );
+
+
+    grid.innerHTML = `
+      <div class="upcoming">
+
+        <div class="upcoming-title">
+          Could not load meal plan.
+        </div>
+
+      </div>
+    `;
+
+  }
+
+}
 
 
 /* START */
