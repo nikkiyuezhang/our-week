@@ -10,7 +10,22 @@ const ALLOWED_RECURRING = [
   "none",
   "weekly"
 ];
+function checkFamilyCode(context) {
 
+  const providedCode =
+    context.request.headers.get(
+      "X-Family-Code"
+    );
+
+  const correctCode =
+    context.env.FAMILY_CODE;
+
+  return (
+    providedCode &&
+    correctCode &&
+    providedCode === correctCode
+  );
+}
 
 /* GET — READ ALL EVENTS */
 
