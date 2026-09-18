@@ -273,10 +273,24 @@ export async function onRequestPost(context) {
 
 
 /* PATCH — EDIT EVENT */
-
 export async function onRequestPatch(context) {
 
   try {
+
+    if (!checkFamilyCode(context)) {
+
+      return Response.json(
+        {
+          success: false,
+          error: "Unauthorized."
+        },
+        {
+          status: 401
+        }
+      );
+
+    }
+
 
     const body =
       await context.request.json();
@@ -423,6 +437,21 @@ export async function onRequestPatch(context) {
 export async function onRequestDelete(context) {
 
   try {
+
+    if (!checkFamilyCode(context)) {
+
+      return Response.json(
+        {
+          success: false,
+          error: "Unauthorized."
+        },
+        {
+          status: 401
+        }
+      );
+
+    }
+
 
     const url =
       new URL(context.request.url);
