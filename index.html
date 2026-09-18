@@ -1991,8 +1991,16 @@ async function openExistingEvent(id, occurrenceDate = null) {
 
   try {
 
-    const eventResponse =
-      await fetch("/api/events");
+ const eventResponse =
+  await fetch(
+    "/api/events",
+    {
+      headers: {
+        "X-Family-Code":
+          getFamilyCode()
+      }
+    }
+  );
 
     const eventData =
       await eventResponse.json();
