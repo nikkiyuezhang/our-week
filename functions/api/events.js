@@ -110,6 +110,19 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
 
   try {
+        if (!checkFamilyCode(context)) {
+
+      return Response.json(
+        {
+          success: false,
+          error: "Unauthorized."
+        },
+        {
+          status: 401
+        }
+      );
+
+    }
 
     const body =
       await context.request.json();
