@@ -793,7 +793,8 @@ async function renderWeek() {
 
   const sampleEvents = {};
 
-
+let exceptions = [];
+  
   try {
 
     const response =
@@ -805,7 +806,7 @@ async function renderWeek() {
 
     if (data.success && Array.isArray(data.events)) {
 
-      const exceptions =
+     exceptions =
         Array.isArray(data.exceptions)
           ? data.exceptions
           : [];
