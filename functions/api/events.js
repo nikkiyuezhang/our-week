@@ -31,7 +31,19 @@ function checkFamilyCode(context) {
 
 export async function onRequestGet(context) {
 
-  try {
+  try {    if (!checkFamilyCode(context)) {
+
+      return Response.json(
+        {
+          success: false,
+          error: "Unauthorized."
+        },
+        {
+          status: 401
+        }
+      );
+
+    }
 
     const { results: events } =
       await context.env.DB
