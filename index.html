@@ -2097,13 +2097,18 @@ async function openExistingEvent(id, occurrenceDate = null) {
 
   try {
 
-    const response =
-      await fetch(
-        deleteUrl,
-        {
-          method: "DELETE"
-        }
-      );
+   const response =
+  await fetch(
+    deleteUrl,
+    {
+      method: "DELETE",
+
+      headers: {
+        "X-Family-Code":
+          getFamilyCode()
+      }
+    }
+  );
 
     const data =
       await response.json();
