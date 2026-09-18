@@ -753,6 +753,32 @@ button {
 <script>
 
 /* TODAY */
+  function getFamilyCode() {
+
+  return sessionStorage.getItem(
+    "our_week_family_code"
+  ) || "";
+
+}
+
+
+function saveFamilyCode(code) {
+
+  sessionStorage.setItem(
+    "our_week_family_code",
+    code
+  );
+
+}
+
+
+function clearFamilyCode() {
+
+  sessionStorage.removeItem(
+    "our_week_family_code"
+  );
+
+}
 let editingEventId = null;
   let editingOccurrenceDate = null;
   let weekOffset = 0;
