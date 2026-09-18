@@ -779,6 +779,45 @@ function clearFamilyCode() {
   );
 
 }
+  function submitFamilyCode() {
+
+  const input =
+    document.getElementById(
+      "familyCodeInput"
+    );
+
+  const code =
+    input.value.trim();
+
+  const message =
+    document.getElementById(
+      "familyCodeMessage"
+    );
+
+
+  if (!code) {
+
+    message.textContent =
+      "Please enter your Family Code.";
+
+    message.style.display =
+      "block";
+
+    return;
+  }
+
+
+  saveFamilyCode(code);
+
+
+  document.getElementById(
+    "familyCodeModal"
+  ).style.display = "none";
+
+
+  message.style.display = "none";
+
+}
 let editingEventId = null;
   let editingOccurrenceDate = null;
   let weekOffset = 0;
