@@ -4507,15 +4507,12 @@ function closeTodoModal() {
                 : ""}
             "
           >
-
-           <input
+<input
   type="checkbox"
   ${isDone ? "checked" : ""}
   onchange="toggleTodo(
     ${todo.id},
-    this.checked,
-    ${JSON.stringify(todo.title)},
-    ${JSON.stringify(todo.notes || "")}
+    this.checked
   )"
   style="
     margin-top:5px;
