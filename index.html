@@ -2321,7 +2321,54 @@ async function renderToday() {
       );
 
     }
+/* =============================
+   LOAD TODAY'S MEALS
+============================= */
 
+let todayMeal = null;
+
+
+try {
+
+  const mealResponse =
+    await fetch(
+      "/api/meal-plan?start=" +
+      todayString +
+      "&end=" +
+      todayString,
+      {
+        headers: {
+          "X-Family-Code":
+            getFamilyCode()
+        }
+      }
+    );
+
+
+  const mealData =
+    await mealResponse.json();
+
+
+  if (
+    mealData.success &&
+    Array.isArray(mealData.meals) &&
+    mealData.meals.length > 0
+  ) {
+
+    todayMeal =
+      mealData.meals[0];
+
+  }
+
+
+} catch (error) {
+
+  console.error(
+    "Could not load today's meals:",
+    error
+  );
+
+}
 
     /* =============================
        BUILD TODAY
