@@ -2148,65 +2148,82 @@ async function openExistingEvent(id, occurrenceDate = null) {
 
   }
 }
+async function renderToday() {
 
-  async function renderToday() {
-
-  const grid = document.getElementById("todayGrid");
+  const grid =
+    document.getElementById("todayGrid");
 
   if (!grid) return;
 
+
   try {
 
-const response =
-  await fetch(
-    "/api/events",
-    {
-      headers: {
-        "X-Family-Code":
-          getFamilyCode()
-      }
-    }
-  );    const data = await response.json();
-
-    if (!data.success || !Array.isArray(data.events)) {
-      return;
-    }
-
-
-    /* -----------------------------
+    /* =============================
        TODAY
-    ----------------------------- */
+    ============================= */
 
-    const today = new Date();
+    const today =
+      new Date();
 
     const todayString =
       today.getFullYear() + "-" +
-      String(today.getMonth() + 1).padStart(2, "0") + "-" +
-      String(today.getDate()).padStart(2, "0");
+      String(
+        today.getMonth() + 1
+      ).padStart(2, "0") + "-" +
+      String(
+        today.getDate()
+      ).padStart(2, "0");
 
 
-    /* -----------------------------
-       DELETED OCCURRENCES
-    ----------------------------- */
+    /* =============================
+       LOAD EVENTS
+    ============================= */
 
-    const exceptions =
-      Array.isArray(data.exceptions)
-        ? data.exceptions
+    const eventResponse =
+      await fetch(
+        "/api/events",
+        {
+          headers: {
+            "X-Family-Code":
+              getFamilyCode()
+          }
+        }
+      );
+
+    const eventData =
+      await eventResponse.json();
+
+
+    const events =
+      eventData.success &&
+      Array.isArray(eventData.events)
+        ? eventData.events
         : [];
 
 
-    /* -----------------------------
+    const exceptions =
+      Array.isArray(eventData.exceptions)
+        ? eventData.exceptions
+        : [];
+
+
+    /* =============================
        FIND TODAY'S EVENTS
-    ----------------------------- */
+    ============================= */
 
     const todayEvents =
-      data.events.filter(event => {
+      events.filter(event => {
 
         /* Normal one-off event */
 
-        if (event.recurring !== "weekly") {
+        if (
+          event.recurring !== "weekly"
+        ) {
 
-          return event.start_date === todayString;
+          return (
+            event.start_date ===
+            todayString
+          );
 
         }
 
@@ -2214,56 +2231,267 @@ const response =
         /* Weekly recurring event */
 
         const eventStart =
-          new Date(event.start_date + "T00:00:00");
+          new Date(
+            event.start_date +
+            "T00:00:00"
+          );
 
-        /*
-          Recurring event has not started yet
-        */
 
         if (today < eventStart) {
           return false;
         }
 
 
-        /*
-          Must be the same weekday
-        */
-
-        if (today.getDay() !== eventStart.getDay()) {
+        if (
+          today.getDay() !==
+          eventStart.getDay()
+        ) {
           return false;
         }
 
 
-        /*
-          Check whether this occurrence
-          was deleted
-        */
-
         const occurrenceDeleted =
-          exceptions.some(exception =>
-            Number(exception.event_id) === Number(event.id) &&
-            exception.exception_date === todayString &&
-            exception.exception_type === "deleted"
+          exceptions.some(
+            exception =>
+              Number(
+                exception.event_id
+              ) ===
+                Number(event.id) &&
+
+              exception.exception_date ===
+                todayString &&
+
+              exception.exception_type ===
+                "deleted"
           );
 
 
-        if (occurrenceDeleted) {
-          return false;
-        }
-
-
-        return true;
+        return !occurrenceDeleted;
 
       });
+
+
+    /* =============================
+       LOAD TODAY'S LUNCHBOX
+    ============================= */
+
+    let todayLunchbox = null;
+
+
+    try {
+
+      const lunchResponse =
+        await fetch(
+          "/api/lunchbox-plan?start=" +
+          todayString +
+          "&end=" +
+          todayString,
+          {
+            headers: {
+              "X-Family-Code":
+                getFamilyCode()
+            }
+          }
+        );
+
+
+      const lunchData =
+        await lunchResponse.json();
+
+
+      if (
+        lunchData.success &&
+        Array.isArray(
+          lunchData.lunches
+        ) &&
+        lunchData.lunches.length > 0
+      ) {
+
+        todayLunchbox =
+          lunchData.lunches[0];
+
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        "Could not load today's lunchbox:",
+        error
+      );
+
+    }
+
+
+    /* =============================
+       BUILD TODAY
+    ============================= */
+
+    let html = "";
+
+
+    /* -----------------------------
+       EVENTS
+    ----------------------------- */
+
+    if (todayEvents.length > 0) {
+
+      html +=
+        todayEvents.map(event => {
+
+          let emoji = "📌";
+
+          if (
+            event.category === "school"
+          ) emoji = "🎒";
+
+          if (
+            event.category === "activity"
+          ) emoji = "🏊";
+
+          if (
+            event.category === "family"
+          ) emoji = "👨‍👩‍👧";
+
+          if (
+            event.category === "travel"
+          ) emoji = "✈️";
+
+
+          let timeText = "";
+
+
+          if (event.start_time) {
+
+            const [hour, minute] =
+              event.start_time.split(":");
+
+            const tempDate =
+              new Date();
+
+            tempDate.setHours(
+              Number(hour),
+              Number(minute)
+            );
+
+
+            timeText =
+              tempDate.toLocaleTimeString(
+                "en-AU",
+                {
+                  hour: "numeric",
+                  minute: "2-digit"
+                }
+              );
+
+          }
+
+
+          return `
+            <div
+              class="today-card"
+              data-event-id="${event.id}"
+              data-occurrence-date="${todayString}"
+              onclick="openExistingEvent(
+                this.dataset.eventId,
+                this.dataset.occurrenceDate
+              )"
+              style="cursor:pointer;"
+            >
+
+              <div class="today-label">
+                ${emoji} ${event.category}
+              </div>
+
+              <div class="today-main">
+                ${event.title}
+              </div>
+
+              ${
+                timeText ||
+                event.location
+                  ? `
+                    <div class="today-detail">
+                      ${timeText}
+                      ${
+                        timeText &&
+                        event.location
+                          ? " · "
+                          : ""
+                      }
+                      ${event.location || ""}
+                    </div>
+                  `
+                  : ""
+              }
+
+              ${
+                event.prepare
+                  ? `
+                    <div class="prepare">
+                      ⚠️ ${event.prepare}
+                    </div>
+                  `
+                  : ""
+              }
+
+            </div>
+          `;
+
+        }).join("");
+
+    }
+
+
+    /* -----------------------------
+       LUNCHBOX
+    ----------------------------- */
+
+    if (
+      todayLunchbox &&
+      todayLunchbox.lunchbox
+    ) {
+
+      html += `
+        <div
+          class="today-card"
+          onclick="openLunchboxModal(
+            '${todayString}'
+          )"
+          style="cursor:pointer;"
+        >
+
+          <div class="today-label">
+            🥪 Lunchbox
+          </div>
+
+          <div class="today-main">
+            ${todayLunchbox.lunchbox}
+          </div>
+
+          ${
+            todayLunchbox.notes
+              ? `
+                <div class="today-detail">
+                  ${todayLunchbox.notes}
+                </div>
+              `
+              : ""
+          }
+
+        </div>
+      `;
+
+    }
 
 
     /* -----------------------------
        NOTHING TODAY
     ----------------------------- */
 
-    if (todayEvents.length === 0) {
+    if (!html) {
 
-      grid.innerHTML = `
+      html = `
         <div class="today-card">
 
           <div class="today-label">
@@ -2281,113 +2509,23 @@ const response =
         </div>
       `;
 
-      return;
     }
 
 
-    /* -----------------------------
-       DISPLAY TODAY'S EVENTS
-    ----------------------------- */
-
-    grid.innerHTML =
-      todayEvents.map(event => {
-
-        let emoji = "📌";
-
-        if (event.category === "school") emoji = "🎒";
-        if (event.category === "activity") emoji = "🏊";
-        if (event.category === "family") emoji = "👨‍👩‍👧";
-        if (event.category === "travel") emoji = "✈️";
-
-
-        let timeText = "";
-
-        if (event.start_time) {
-
-          const [hour, minute] =
-            event.start_time.split(":");
-
-          const tempDate = new Date();
-
-          tempDate.setHours(
-            Number(hour),
-            Number(minute)
-          );
-
-          timeText =
-            tempDate.toLocaleTimeString(
-              "en-AU",
-              {
-                hour: "numeric",
-                minute: "2-digit"
-              }
-            );
-        }
-
-
-        return `
-          <div
-            class="today-card"
-            data-event-id="${event.id}"
-            data-occurrence-date="${todayString}"
-            onclick="openExistingEvent(
-              this.dataset.eventId,
-              this.dataset.occurrenceDate
-            )"
-            style="cursor:pointer;"
-          >
-
-            <div class="today-label">
-              ${emoji} ${event.category}
-            </div>
-
-            <div class="today-main">
-              ${event.title}
-            </div>
-
-            ${
-              timeText || event.location
-                ? `
-                  <div class="today-detail">
-                    ${timeText}
-                    ${timeText && event.location ? " · " : ""}
-                    ${event.location || ""}
-                  </div>
-                `
-                : ""
-            }
-
-            ${
-              event.prepare
-                ? `
-                  <div class="prepare">
-                    ⚠️ ${event.prepare}
-                  </div>
-                `
-                : ""
-            }
-
-          </div>
-        `;
-
-      }).join("");
+    grid.innerHTML = html;
 
 
   } catch (error) {
 
     console.error(
-      "Could not load today's events:",
+      "Could not load today's information:",
       error
     );
 
   }
 
 }
-
-
-
   
-
 /* TOMORROW */
 
 async function renderTomorrow() {
