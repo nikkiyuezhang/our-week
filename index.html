@@ -4387,16 +4387,22 @@ function closeTodoModal() {
             "
           >
 
-            <input
-              type="checkbox"
-              ${isDone ? "checked" : ""}
-              disabled
-              style="
-                margin-top:5px;
-                width:18px;
-                height:18px;
-              "
-            >
+           <input
+  type="checkbox"
+  ${isDone ? "checked" : ""}
+  onchange="toggleTodo(
+    ${todo.id},
+    this.checked,
+    ${JSON.stringify(todo.title)},
+    ${JSON.stringify(todo.notes || "")}
+  )"
+  style="
+    margin-top:5px;
+    width:18px;
+    height:18px;
+    cursor:pointer;
+  "
+>
 
             <div style="flex:1;">
 
@@ -4443,6 +4449,66 @@ function closeTodoModal() {
         </div>
       </div>
     `;
+
+  }
+
+}
+  async function toggleTodo(
+  id,
+  completed,
+  title,
+  notes
+) {
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/todos",
+        {
+          method: "PATCH",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            "X-Family-Code":
+              getFamilyCode()
+          },
+
+          body: JSON.stringify({
+            id: id,
+            title: title,
+            notes: notes,
+            completed: completed
+          })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!data.success) {
+      throw new Error(
+        data.error ||
+        "Could not update To-Do."
+      );
+    }
+
+
+    renderTodos();
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not update To-Do:",
+      error
+    );
+
+    renderTodos();
 
   }
 
