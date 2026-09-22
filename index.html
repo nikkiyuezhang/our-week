@@ -2404,11 +2404,19 @@ async function renderTomorrow() {
 
   try {
 
-    const response =
-      await fetch("/api/events");
+ const response =
+  await fetch(
+    "/api/events",
+    {
+      headers: {
+        "X-Family-Code":
+          getFamilyCode()
+      }
+    }
+  );
 
-    const data =
-      await response.json();
+const data =
+  await response.json();
 
 
     if (
