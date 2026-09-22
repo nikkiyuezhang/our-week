@@ -371,20 +371,41 @@ button {
         </div>
       </div>
 
-      <div class="today-pill" id="todayDate">
-        Today
-      </div>
+     <div
+  style="
+    display:flex;
+    align-items:center;
+    gap:10px;
+  "
+>
+
+  <button
+    onclick="familySpeaker()"
+    title="Family Speaker"
+    style="
+      width:38px;
+      height:38px;
+      border:none;
+      border-radius:14px;
+      background:rgba(255,255,255,0.16);
+      color:white;
+      font-size:18px;
+      cursor:pointer;
+    "
+  >
+    📣
+  </button>
+
+  <div class="today-pill" id="todayDate">
+    Today
+  </div>
+
+</div>
 
     </div>
 
   </header>
 
-<button
-  class="add-button"
-  onclick="familySpeaker()"
->
-  📣
-</button>
   <!-- TODAY -->
 
   <section class="section">
