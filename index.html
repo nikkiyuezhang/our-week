@@ -330,6 +330,7 @@ button {
 .family-notice {
   display: flex;
   align-items: center;
+  position: relative;
   background: #fffaf0;
   border: 1px solid #eee4cf;
   border-radius: 14px;
@@ -349,8 +350,10 @@ button {
 
 .family-notice-window {
   flex: 1;
+  min-width: 0;
   overflow: hidden;
   white-space: nowrap;
+  padding-right: 38px;
 }
 
 .family-notice-text {
@@ -360,6 +363,20 @@ button {
   font-size: 14px;
   font-weight: 600;
   animation: familyNoticeScroll 18s linear infinite;
+}
+
+.family-notice-edit {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: #fffaf0;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 5px 7px;
+  border-radius: 8px;
+  z-index: 2;
 }
 
 @keyframes familyNoticeScroll {
@@ -453,9 +470,11 @@ button {
   </header>
 <!-- FAMILY NOTICE -->
 
-<div class="family-notice-label">
-  📢 FAMILY NOTICE
-</div>
+<div class="family-notice">
+
+  <div class="family-notice-label">
+    📢 FAMILY NOTICE
+  </div>
 
   <div class="family-notice-window">
     <div
@@ -465,6 +484,15 @@ button {
       Loading family notice...
     </div>
   </div>
+
+  <button
+    class="family-notice-edit"
+    type="button"
+    onclick="editFamilyNotice()"
+    title="Edit Family Notice"
+  >
+    ✏️
+  </button>
 
 </div>
   <!-- TODAY -->
