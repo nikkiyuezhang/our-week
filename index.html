@@ -4257,7 +4257,59 @@ html += `
 
 }
 
+/* =============================
+   TODO / MEMO MODAL
+============================= */
 
+function openTodoModal() {
+
+  document.getElementById(
+    "todoId"
+  ).value = "";
+
+  document.getElementById(
+    "todoTitle"
+  ).value = "";
+
+  document.getElementById(
+    "todoNotes"
+  ).value = "";
+
+  const message =
+    document.getElementById(
+      "todoFormMessage"
+    );
+
+  message.style.display = "none";
+  message.textContent = "";
+
+
+  const modal =
+    document.getElementById(
+      "todoModal"
+    );
+
+  modal.style.display = "flex";
+
+
+  setTimeout(() => {
+
+    document.getElementById(
+      "todoTitle"
+    ).focus();
+
+  }, 100);
+
+}
+
+
+function closeTodoModal() {
+
+  document.getElementById(
+    "todoModal"
+  ).style.display = "none";
+
+}
 /* START */
 renderWeek();
 renderToday();
