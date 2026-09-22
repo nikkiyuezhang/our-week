@@ -4310,6 +4310,143 @@ function closeTodoModal() {
   ).style.display = "none";
 
 }
+  async function renderTodos() {
+
+  const list =
+    document.getElementById(
+      "todoList"
+    );
+
+  if (!list) return;
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/todos",
+        {
+          headers: {
+            "X-Family-Code":
+              getFamilyCode()
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !data.success ||
+      !Array.isArray(data.todos)
+    ) {
+      throw new Error(
+        "Could not load To-Dos."
+      );
+    }
+
+
+    if (data.todos.length === 0) {
+
+      list.innerHTML = `
+        <div class="today-card">
+
+          <div class="today-main">
+            Nothing on the list
+          </div>
+
+          <div class="today-detail">
+            Add something you want to remember.
+          </div>
+
+        </div>
+      `;
+
+      return;
+    }
+
+
+    list.innerHTML =
+      data.todos.map(todo => {
+
+        const isDone =
+          Number(todo.completed) === 1;
+
+        return `
+          <div
+            class="today-card"
+            style="
+              display:flex;
+              align-items:flex-start;
+              gap:12px;
+              ${isDone
+                ? "opacity:0.55;"
+                : ""}
+            "
+          >
+
+            <input
+              type="checkbox"
+              ${isDone ? "checked" : ""}
+              disabled
+              style="
+                margin-top:5px;
+                width:18px;
+                height:18px;
+              "
+            >
+
+            <div style="flex:1;">
+
+              <div
+                class="today-main"
+                style="
+                  ${isDone
+                    ? "text-decoration:line-through;"
+                    : ""}
+                "
+              >
+                ${todo.title}
+              </div>
+
+              ${
+                todo.notes
+                  ? `
+                    <div class="today-detail">
+                      ${todo.notes}
+                    </div>
+                  `
+                  : ""
+              }
+
+            </div>
+
+          </div>
+        `;
+
+      }).join("");
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not load To-Dos:",
+      error
+    );
+
+    list.innerHTML = `
+      <div class="today-card">
+        <div class="today-main">
+          Could not load To-Dos.
+        </div>
+      </div>
+    `;
+
+  }
+
+}
 /* START */
 renderWeek();
 renderToday();
