@@ -325,7 +325,54 @@ button {
   font-size: 13px;
   line-height: 1.4;
 }
+/* FAMILY NOTICE */
 
+.family-notice {
+  display: flex;
+  align-items: center;
+  background: #fffaf0;
+  border: 1px solid #eee4cf;
+  border-radius: 14px;
+  margin: 16px 0;
+  overflow: hidden;
+  min-height: 46px;
+}
+
+.family-notice-label {
+  flex-shrink: 0;
+  padding: 0 15px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #74643f;
+  letter-spacing: .5px;
+}
+
+.family-notice-window {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.family-notice-text {
+  display: inline-block;
+  padding-left: 100%;
+  color: #59635b;
+  font-size: 14px;
+  font-weight: 600;
+  animation: familyNoticeScroll 18s linear infinite;
+}
+
+@keyframes familyNoticeScroll {
+
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+
+}
 /* MOBILE */
 
 @media (max-width: 850px) {
@@ -404,7 +451,24 @@ button {
     </div>
 
   </header>
+<!-- FAMILY NOTICE -->
 
+<div class="family-notice">
+
+  <div class="family-notice-label">
+    📢 FAMILY NOTICE
+  </div>
+
+  <div class="family-notice-window">
+    <div
+      class="family-notice-text"
+      id="familyNoticeText"
+    >
+      Loading family notice...
+    </div>
+  </div>
+
+</div>
   <!-- TODAY -->
 
   <section class="section">
