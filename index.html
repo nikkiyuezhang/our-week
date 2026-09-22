@@ -4571,11 +4571,9 @@ function closeTodoModal() {
   }
 
 }
-  async function toggleTodo(
+ async function toggleTodo(
   id,
-  completed,
-  title,
-  notes
+  completed
 ) {
 
   try {
@@ -4596,8 +4594,6 @@ function closeTodoModal() {
 
           body: JSON.stringify({
             id: id,
-            title: title,
-            notes: notes,
             completed: completed
           })
         }
@@ -4609,10 +4605,12 @@ function closeTodoModal() {
 
 
     if (!data.success) {
+
       throw new Error(
         data.error ||
         "Could not update To-Do."
       );
+
     }
 
 
