@@ -128,7 +128,9 @@ button {
   .today-event-card {
   border-left: 4px solid #a9b7aa;
 }
-
+.today-lunchbox-card {
+  border-left: 4px solid #d8b86a;
+}
 .today-card[style*="cursor:pointer"]:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(55, 65, 58, 0.09);
@@ -2557,8 +2559,8 @@ data-event-id="${event.id}"
 
       html += `
         <div
-          class="today-card"
-          onclick="openLunchboxModal(
+class="today-card today-lunchbox-card"
+onclick="openLunchboxModal(
             '${todayString}'
           )"
           style="cursor:pointer;"
