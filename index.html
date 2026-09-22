@@ -4886,7 +4886,60 @@ function familySpeaker() {
 
   window.speechSynthesis.speak(speech);
 }
-  
+async function renderFamilyNotice() {
+
+  const noticeText =
+    document.getElementById(
+      "familyNoticeText"
+    );
+
+  if (!noticeText) return;
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/family-notice",
+        {
+          headers: {
+            "X-Family-Code":
+              getFamilyCode()
+          }
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (
+      data.success &&
+      data.notice &&
+      data.notice.message
+    ) {
+
+      noticeText.textContent =
+        data.notice.message;
+
+    } else {
+
+      noticeText.textContent =
+        "Lots of love, always 💕";
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Could not load family notice:",
+      error
+    );
+
+    noticeText.textContent =
+      "Lots of love, always 💕";
+
+  }
+
+}  
 /* START */
 renderWeek();
 renderToday();
@@ -4895,6 +4948,7 @@ renderUpcoming();
   renderLunchbox();
   renderMealPlan();
   renderTodos();
+  renderFamilyNotice();
 
 </script>
 <!-- ADD EVENT MODAL -->
