@@ -4966,6 +4966,82 @@ async function renderFamilyNotice() {
   }
 
 }  
+  async function editFamilyNotice() {
+
+  const noticeText =
+    document.getElementById(
+      "familyNoticeText"
+    );
+
+  if (!noticeText) return;
+
+  const newMessage =
+    prompt(
+      "Update Family Notice:",
+      noticeText.textContent.trim()
+    );
+
+  if (newMessage === null) {
+    return;
+  }
+
+  const message =
+    newMessage.trim();
+
+  if (!message) {
+    alert("Please enter a notice.");
+    return;
+  }
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/family-notice",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            "X-Family-Code":
+              getFamilyCode()
+          },
+
+          body: JSON.stringify({
+            message: message
+          })
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (!data.success) {
+      throw new Error(
+        data.error ||
+        "Could not save notice."
+      );
+    }
+
+    noticeText.textContent =
+      message;
+
+  } catch (error) {
+
+    console.error(
+      "Could not save Family Notice:",
+      error
+    );
+
+    alert(
+      "Could not save Family Notice."
+    );
+
+  }
+
+}
 /* START */
 renderWeek();
 renderToday();
