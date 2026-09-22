@@ -4629,6 +4629,65 @@ function closeTodoModal() {
   }
 
 }
+  async function deleteTodo(id) {
+
+  const confirmed =
+    confirm(
+      "Delete this To-Do?"
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/todos?id=" + id,
+        {
+          method: "DELETE",
+
+          headers: {
+            "X-Family-Code":
+              getFamilyCode()
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!data.success) {
+
+      throw new Error(
+        data.error ||
+        "Could not delete To-Do."
+      );
+
+    }
+
+
+    renderTodos();
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not delete To-Do:",
+      error
+    );
+
+    alert(
+      "Could not delete To-Do."
+    );
+
+  }
+
+}
 /* START */
 renderWeek();
 renderToday();
