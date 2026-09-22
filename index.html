@@ -1638,10 +1638,13 @@ async function saveMeal() {
         {
           method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
+         headers: {
+  "Content-Type":
+    "application/json",
+
+  "X-Family-Code":
+    getFamilyCode()
+},
 
           body: JSON.stringify({
             meal_date: mealDate,
