@@ -4770,6 +4770,32 @@ function closeTodoModal() {
   }
 
 }
+function familySpeaker() {
+
+  const messages = [
+    "Good morning family! Have a great day!",
+    "Come on kids, time to get ready!",
+    "Don't forget your lunchbox!",
+    "Dinner time!",
+    "Attention everyone! Family announcement!"
+  ];
+
+  const message =
+    messages[
+      Math.floor(
+        Math.random() * messages.length
+      )
+    ];
+
+  const speech =
+    new SpeechSynthesisUtterance(message);
+
+  speech.rate = 0.95;
+  speech.pitch = 1.05;
+
+  window.speechSynthesis.speak(speech);
+}
+  
 /* START */
 renderWeek();
 renderToday();
