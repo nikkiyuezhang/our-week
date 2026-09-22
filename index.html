@@ -120,37 +120,48 @@ button {
   background: #faf9f5;
   border: 1px solid #ebe8df;
   border-radius: 16px;
-  padding: 17px;
+  padding: 18px 19px;
+  box-shadow: 0 3px 12px rgba(55, 65, 58, 0.05);
+  transition: transform 0.15s ease,
+              box-shadow 0.15s ease;
+}
+
+.today-card[style*="cursor:pointer"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(55, 65, 58, 0.09);
 }
 
 .today-label {
   color: #788178;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .7px;
+  letter-spacing: .8px;
   text-transform: uppercase;
-  margin-bottom: 9px;
+  margin-bottom: 10px;
 }
 
 .today-main {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
+  line-height: 1.35;
+  color: #303832;
   margin-bottom: 7px;
 }
 
 .today-detail {
   font-size: 14px;
-  line-height: 1.5;
-  color: #58625b;
+  line-height: 1.55;
+  color: #667068;
 }
 
 .prepare {
-  margin-top: 10px;
+  margin-top: 12px;
   background: #fff2cc;
   color: #725a16;
-  border-radius: 9px;
-  padding: 8px 10px;
+  border-radius: 10px;
+  padding: 9px 11px;
   font-size: 13px;
+  line-height: 1.4;
 }
 
 /* WEEK */
