@@ -1666,15 +1666,14 @@ async function saveMeal() {
       "block";
 
 
-renderMealPlan();
-renderToday();
+setTimeout(() => {
 
-    setTimeout(() => {
+  closeMealModal();
 
-      closeMealModal();
+  renderMealPlan();
+  renderToday();
 
-    }, 500);
-
+}, 500);
 
   } catch (error) {
 
