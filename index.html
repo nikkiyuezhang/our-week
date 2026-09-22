@@ -1515,13 +1515,18 @@ async function openMealModal(date) {
   try {
 
     const response =
-      await fetch(
-        "/api/meal-plan?start=" +
-        date +
-        "&end=" +
-        date
-      );
-
+  await fetch(
+    "/api/meal-plan?start=" +
+    date +
+    "&end=" +
+    date,
+    {
+      headers: {
+        "X-Family-Code":
+          getFamilyCode()
+      }
+    }
+  );
 
     const data =
       await response.json();
@@ -3101,12 +3106,18 @@ const sunday =
     */
 
     const response =
-      await fetch(
-        "/api/meal-plan?start=" +
-        startDate +
-        "&end=" +
-        endDate
-      );
+  await fetch(
+    "/api/meal-plan?start=" +
+    startDate +
+    "&end=" +
+    endDate,
+    {
+      headers: {
+        "X-Family-Code":
+          getFamilyCode()
+      }
+    }
+  );
 
     const data =
       await response.json();
