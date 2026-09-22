@@ -2531,7 +2531,88 @@ try {
 
     }
 
+/* -----------------------------
+   MEALS
+----------------------------- */
 
+if (
+  todayMeal &&
+  (
+    todayMeal.breakfast ||
+    todayMeal.lunch ||
+    todayMeal.dinner
+  )
+) {
+
+  html += `
+    <div
+      class="today-card"
+      onclick="openMealModal(
+        '${todayString}'
+      )"
+      style="cursor:pointer;"
+    >
+
+      <div class="today-label">
+        🍽️ Today's Meals
+      </div>
+
+      ${
+        todayMeal.breakfast
+          ? `
+            <div class="today-detail">
+              🌅 <strong>Breakfast</strong><br>
+              ${todayMeal.breakfast}
+            </div>
+          `
+          : ""
+      }
+
+      ${
+        todayMeal.lunch
+          ? `
+            <div
+              class="today-detail"
+              style="margin-top:10px;"
+            >
+              🥪 <strong>Lunch</strong><br>
+              ${todayMeal.lunch}
+            </div>
+          `
+          : ""
+      }
+
+      ${
+        todayMeal.dinner
+          ? `
+            <div
+              class="today-detail"
+              style="margin-top:10px;"
+            >
+              🌙 <strong>Dinner</strong><br>
+              ${todayMeal.dinner}
+            </div>
+          `
+          : ""
+      }
+
+      ${
+        todayMeal.notes
+          ? `
+            <div
+              class="today-detail"
+              style="margin-top:10px;"
+            >
+              📝 ${todayMeal.notes}
+            </div>
+          `
+          : ""
+      }
+
+    </div>
+  `;
+
+}
     /* -----------------------------
        NOTHING TODAY
     ----------------------------- */
