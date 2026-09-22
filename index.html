@@ -3581,14 +3581,14 @@ async function saveLunchbox() {
       "✓ Lunchbox saved";
 
 
-    setTimeout(() => {
+  setTimeout(() => {
 
-      closeLunchboxModal();
+  closeLunchboxModal();
 
-      renderLunchbox();
+  renderLunchbox();
+  renderToday();
 
-    }, 400);
-
+}, 400);
 
   } catch (error) {
 
