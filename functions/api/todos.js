@@ -190,14 +190,11 @@ export async function onRequestPatch(context) {
 
     }
 
-
     const body =
       await context.request.json();
 
-
     const id =
       Number(body.id);
-
 
     if (!id) {
 
@@ -213,30 +210,26 @@ export async function onRequestPatch(context) {
 
     }
 
+    const completed =
+      body.completed ? 1 : 0;
 
     await context.env.DB
       .prepare(`
         UPDATE todo_list
         SET
-          title = ?,
-          notes = ?,
           completed = ?,
           updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `)
       .bind(
-        body.title || "",
-        body.notes || null,
-        body.completed ? 1 : 0,
+        completed,
         id
       )
       .run();
 
-
     return Response.json({
       success: true
     });
-
 
   } catch (error) {
 
@@ -253,7 +246,6 @@ export async function onRequestPatch(context) {
   }
 
 }
-
 
 /* =============================
    DELETE TODO
