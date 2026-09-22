@@ -3158,7 +3158,11 @@ const data =
     row.className =
       "meal-row";
 
+row.style.cursor = "pointer";
 
+row.onclick = function() {
+  openLunchboxModal(dateString);
+};
     row.innerHTML = `
       <div class="meal-day">
         ${dayNames[i]}
