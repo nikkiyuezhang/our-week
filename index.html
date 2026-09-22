@@ -909,31 +909,23 @@ button {
 <script>
 
 /* TODAY */
-  function getFamilyCode() {
-
-  return sessionStorage.getItem(
+ function getFamilyCode() {
+  return localStorage.getItem(
     "our_week_family_code"
   ) || "";
-
 }
 
-
 function saveFamilyCode(code) {
-
-  sessionStorage.setItem(
+  localStorage.setItem(
     "our_week_family_code",
     code
   );
-
 }
 
-
 function clearFamilyCode() {
-
-  sessionStorage.removeItem(
+  localStorage.removeItem(
     "our_week_family_code"
   );
-
 }
 async function submitFamilyCode() {
 
