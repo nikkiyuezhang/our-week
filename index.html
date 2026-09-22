@@ -3957,12 +3957,13 @@ async function saveLunchbox() {
       "✓ Lunchbox saved";
 
 
-  setTimeout(() => {
+setTimeout(() => {
 
   closeLunchboxModal();
 
   renderLunchbox();
   renderToday();
+  renderTomorrow();
 
 }, 400);
 
