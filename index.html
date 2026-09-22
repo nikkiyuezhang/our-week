@@ -1424,14 +1424,14 @@ for (let i = 0; i < 7; i++) {
 }
 
 
- function changeWeek(direction) {
+function changeWeek(direction) {
 
   weekOffset += direction;
 
   renderWeek();
+  renderLunchbox();
   renderMealPlan();
 }
-
 
 function goToCurrentWeek() {
 
