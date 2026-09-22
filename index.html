@@ -3018,6 +3018,148 @@ const data =
 
   }
 
+} 
+  async function renderLunchbox() {
+
+  const grid =
+    document.getElementById("lunchboxGrid");
+
+  if (!grid) return;
+
+
+  const monday =
+    getMonday(new Date());
+
+  monday.setDate(
+    monday.getDate() + (weekOffset * 7)
+  );
+
+
+  const friday =
+    new Date(monday);
+
+  friday.setDate(
+    monday.getDate() + 4
+  );
+
+
+  function toDateString(date) {
+
+    return [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0")
+    ].join("-");
+
+  }
+
+
+  const startDate =
+    toDateString(monday);
+
+  const endDate =
+    toDateString(friday);
+
+
+  let lunches = [];
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/lunchbox-plan?start=" +
+        startDate +
+        "&end=" +
+        endDate,
+        {
+          headers: {
+            "X-Family-Code":
+              getFamilyCode()
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      data.success &&
+      Array.isArray(data.lunches)
+    ) {
+
+      lunches =
+        data.lunches;
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not load lunchbox:",
+      error
+    );
+
+  }
+
+
+  const dayNames =
+    ["MON", "TUE", "WED", "THU", "FRI"];
+
+
+  grid.innerHTML = "";
+
+
+  for (let i = 0; i < 5; i++) {
+
+    const currentDate =
+      new Date(monday);
+
+    currentDate.setDate(
+      monday.getDate() + i
+    );
+
+
+    const dateString =
+      toDateString(currentDate);
+
+
+    const lunch =
+      lunches.find(
+        item =>
+          item.lunch_date === dateString
+      );
+
+
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "meal-row";
+
+
+    row.innerHTML = `
+      <div class="meal-day">
+        ${dayNames[i]}
+      </div>
+
+      <div class="meal-name">
+        ${
+          lunch && lunch.lunchbox
+            ? lunch.lunchbox
+            : "—"
+        }
+      </div>
+    `;
+
+
+    grid.appendChild(row);
+
+  }
+
 }
   async function renderMealPlan() {
 
@@ -3250,6 +3392,7 @@ renderWeek();
 renderToday();
   renderTomorrow();
 renderUpcoming();
+  renderLunchbox();
   renderMealPlan();
 
 </script>
