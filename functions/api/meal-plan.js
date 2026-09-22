@@ -1,6 +1,43 @@
+function checkFamilyCode(context) {
+
+  const providedCode =
+    context.request.headers.get(
+      "X-Family-Code"
+    );
+
+  const correctCode =
+    context.env.FAMILY_CODE;
+
+  return (
+    providedCode &&
+    correctCode &&
+    providedCode === correctCode
+  );
+}
+
+
+/*
+  GET MEAL PLAN
+*/
+
 export async function onRequestGet(context) {
 
   try {
+
+    if (!checkFamilyCode(context)) {
+
+      return Response.json(
+        {
+          success: false,
+          error: "Unauthorized."
+        },
+        {
+          status: 401
+        }
+      );
+
+    }
+
 
     const { env, request } = context;
 
@@ -100,6 +137,21 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
 
   try {
+
+    if (!checkFamilyCode(context)) {
+
+      return Response.json(
+        {
+          success: false,
+          error: "Unauthorized."
+        },
+        {
+          status: 401
+        }
+      );
+
+    }
+
 
     const { env, request } = context;
 
@@ -212,6 +264,21 @@ export async function onRequestPost(context) {
 export async function onRequestDelete(context) {
 
   try {
+
+    if (!checkFamilyCode(context)) {
+
+      return Response.json(
+        {
+          success: false,
+          error: "Unauthorized."
+        },
+        {
+          status: 401
+        }
+      );
+
+    }
+
 
     const { env, request } = context;
 
