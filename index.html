@@ -3183,6 +3183,229 @@ row.onclick = function() {
   }
 
 }
+  async function openLunchboxModal(date) {
+
+  const modal =
+    document.getElementById("lunchboxModal");
+
+  const dateInput =
+    document.getElementById("lunchboxDate");
+
+  const dateLabel =
+    document.getElementById("lunchboxModalDateLabel");
+
+  const foodInput =
+    document.getElementById("lunchboxFood");
+
+  const notesInput =
+    document.getElementById("lunchboxNotes");
+
+  const message =
+    document.getElementById("lunchboxFormMessage");
+
+
+  dateInput.value = date;
+
+  foodInput.value = "";
+  notesInput.value = "";
+
+  message.style.display = "none";
+
+
+  const displayDate =
+    new Date(date + "T00:00:00");
+
+  dateLabel.textContent =
+    displayDate.toLocaleDateString(
+      "en-AU",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "short"
+      }
+    );
+
+
+  modal.style.display = "flex";
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/lunchbox-plan?start=" +
+        date +
+        "&end=" +
+        date,
+        {
+          headers: {
+            "X-Family-Code":
+              getFamilyCode()
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      data.success &&
+      Array.isArray(data.lunches) &&
+      data.lunches.length > 0
+    ) {
+
+      const lunch =
+        data.lunches[0];
+
+      foodInput.value =
+        lunch.lunchbox || "";
+
+      notesInput.value =
+        lunch.notes || "";
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not load lunchbox:",
+      error
+    );
+
+  }
+
+}
+
+
+function closeLunchboxModal() {
+
+  document.getElementById(
+    "lunchboxModal"
+  ).style.display = "none";
+
+}
+
+
+async function saveLunchbox() {
+
+  const button =
+    document.getElementById(
+      "saveLunchboxButton"
+    );
+
+  const message =
+    document.getElementById(
+      "lunchboxFormMessage"
+    );
+
+  const lunchDate =
+    document.getElementById(
+      "lunchboxDate"
+    ).value;
+
+  const lunchbox =
+    document.getElementById(
+      "lunchboxFood"
+    ).value.trim();
+
+  const notes =
+    document.getElementById(
+      "lunchboxNotes"
+    ).value.trim();
+
+
+  if (!lunchDate) {
+
+    return;
+
+  }
+
+
+  button.disabled = true;
+  button.textContent = "Saving...";
+
+  message.style.display = "none";
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/lunchbox-plan",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            "X-Family-Code":
+              getFamilyCode()
+          },
+
+          body: JSON.stringify({
+            lunch_date: lunchDate,
+            lunchbox: lunchbox,
+            notes: notes
+          })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok || !data.success) {
+
+      throw new Error(
+        data.error ||
+        "Could not save lunchbox."
+      );
+
+    }
+
+
+    message.style.display = "block";
+    message.style.color = "#287a4b";
+    message.textContent =
+      "✓ Lunchbox saved";
+
+
+    setTimeout(() => {
+
+      closeLunchboxModal();
+
+      renderLunchbox();
+
+    }, 400);
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not save lunchbox:",
+      error
+    );
+
+    message.style.display = "block";
+    message.style.color = "#b42318";
+    message.textContent =
+      "Could not save lunchbox.";
+
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent =
+      "Save Lunchbox";
+
+  }
+
+}
   async function renderMealPlan() {
 
   const grid =
