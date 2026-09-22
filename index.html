@@ -130,6 +130,8 @@ button {
 }
 .today-lunchbox-card {
   border-left: 4px solid #d8b86a;
+} .today-meal-card {
+  border-left: 4px solid #b9a7c9;
 }
 .today-card[style*="cursor:pointer"]:hover {
   transform: translateY(-1px);
@@ -2604,8 +2606,8 @@ if (
 
   html += `
     <div
-      class="today-card"
-      onclick="openMealModal(
+class="today-card today-meal-card"
+onclick="openMealModal(
         '${todayString}'
       )"
       style="cursor:pointer;"
@@ -3018,8 +3020,8 @@ async function renderTomorrow() {
 
           return `
             <div
-              class="today-card"
-              onclick="openExistingEvent(
+class="today-card today-event-card"
+onclick="openExistingEvent(
                 ${event.id},
                 '${tomorrowString}'
               )"
@@ -3097,7 +3099,7 @@ async function renderTomorrow() {
 
       html += `
         <div
-          class="today-card"
+class="today-card today-lunchbox-card"
           onclick="openLunchboxModal(
             '${tomorrowString}'
           )"
@@ -3143,7 +3145,7 @@ async function renderTomorrow() {
 
       html += `
         <div
-          class="today-card"
+class="today-card today-meal-card"
           onclick="openMealModal(
             '${tomorrowString}'
           )"
