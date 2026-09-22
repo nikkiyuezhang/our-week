@@ -4522,30 +4522,47 @@ function closeTodoModal() {
   "
 >
 
-            <div style="flex:1;">
+          <div style="flex:1;">
 
-              <div
-                class="today-main"
-                style="
-                  ${isDone
-                    ? "text-decoration:line-through;"
-                    : ""}
-                "
-              >
-                ${todo.title}
-              </div>
+  <div
+    class="today-main"
+    style="
+      ${isDone
+        ? "text-decoration:line-through;"
+        : ""}
+    "
+  >
+    ${todo.title}
+  </div>
 
-              ${
-                todo.notes
-                  ? `
-                    <div class="today-detail">
-                      ${todo.notes}
-                    </div>
-                  `
-                  : ""
-              }
+  ${
+    todo.notes
+      ? `
+        <div class="today-detail">
+          ${todo.notes}
+        </div>
+      `
+      : ""
+  }
 
-            </div>
+</div>
+
+
+<button
+  type="button"
+  onclick="deleteTodo(${todo.id})"
+  title="Delete"
+  style="
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    font-size:18px;
+    opacity:0.55;
+    padding:2px 4px;
+  "
+>
+  🗑️
+</button>
 
           </div>
         `;
