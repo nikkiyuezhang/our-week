@@ -4310,6 +4310,127 @@ function closeTodoModal() {
   ).style.display = "none";
 
 }
+  async function saveTodo() {
+
+  const title =
+    document.getElementById(
+      "todoTitle"
+    ).value.trim();
+
+  const notes =
+    document.getElementById(
+      "todoNotes"
+    ).value.trim();
+
+  const message =
+    document.getElementById(
+      "todoFormMessage"
+    );
+
+  const button =
+    document.getElementById(
+      "saveTodoButton"
+    );
+
+
+  if (!title) {
+
+    message.textContent =
+      "Please enter a To-Do.";
+
+    message.style.display =
+      "block";
+
+    return;
+  }
+
+
+  try {
+
+    button.disabled = true;
+    button.textContent =
+      "Saving...";
+
+    message.style.display =
+      "none";
+
+
+    const response =
+      await fetch(
+        "/api/todos",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            "X-Family-Code":
+              getFamilyCode()
+          },
+
+          body: JSON.stringify({
+            title: title,
+            notes: notes
+          })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!data.success) {
+
+      throw new Error(
+        data.error ||
+        "Could not save To-Do."
+      );
+
+    }
+
+
+    message.textContent =
+      "Saved ✓";
+
+    message.style.display =
+      "block";
+
+
+    setTimeout(() => {
+
+      closeTodoModal();
+
+      renderTodos();
+
+    }, 500);
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not save To-Do:",
+      error
+    );
+
+    message.textContent =
+      "Could not save To-Do.";
+
+    message.style.display =
+      "block";
+
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent =
+      "Save To-Do";
+
+  }
+
+}
+  
   async function renderTodos() {
 
   const list =
