@@ -3186,6 +3186,71 @@ row.onclick = function() {
   }
 
 }
+  function openAddLunchbox() {
+
+  const monday =
+    getMonday(new Date());
+
+  monday.setDate(
+    monday.getDate() + (weekOffset * 7)
+  );
+
+
+  const choices = [
+    "MON",
+    "TUE",
+    "WED",
+    "THU",
+    "FRI"
+  ];
+
+
+  const selected =
+    prompt(
+      "Choose a day:\n\n" +
+      "1 = MON\n" +
+      "2 = TUE\n" +
+      "3 = WED\n" +
+      "4 = THU\n" +
+      "5 = FRI"
+    );
+
+
+  const dayNumber =
+    Number(selected);
+
+
+  if (
+    !dayNumber ||
+    dayNumber < 1 ||
+    dayNumber > 5
+  ) {
+    return;
+  }
+
+
+  const selectedDate =
+    new Date(monday);
+
+  selectedDate.setDate(
+    monday.getDate() + dayNumber - 1
+  );
+
+
+  const dateString = [
+    selectedDate.getFullYear(),
+    String(
+      selectedDate.getMonth() + 1
+    ).padStart(2, "0"),
+    String(
+      selectedDate.getDate()
+    ).padStart(2, "0")
+  ].join("-");
+
+
+  openLunchboxModal(dateString);
+
+}
   async function openLunchboxModal(date) {
 
   const modal =
