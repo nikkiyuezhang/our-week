@@ -125,6 +125,9 @@ button {
   transition: transform 0.15s ease,
               box-shadow 0.15s ease;
 }
+  .today-event-card {
+  border-left: 4px solid #a9b7aa;
+}
 
 .today-card[style*="cursor:pointer"]:hover {
   transform: translateY(-1px);
@@ -2489,8 +2492,8 @@ try {
 
           return `
             <div
-              class="today-card"
-              data-event-id="${event.id}"
+class="today-card today-event-card"
+data-event-id="${event.id}"
               data-occurrence-date="${todayString}"
               onclick="openExistingEvent(
                 this.dataset.eventId,
