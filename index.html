@@ -4572,29 +4572,84 @@ function closeTodoModal() {
   }
 
 }
-  function openExistingTodo(
-  id,
-  title,
-  notes
-) {
+async function openExistingTodo(id) {
 
-  editingTodoId = id;
+  try {
 
-  document.getElementById(
-    "todoTitle"
-  ).value = title || "";
+    const response =
+      await fetch(
+        "/api/todos",
+        {
+          headers: {
+            "X-Family-Code":
+              getFamilyCode()
+          }
+        }
+      );
 
-  document.getElementById(
-    "todoNotes"
-  ).value = notes || "";
+    const data =
+      await response.json();
 
-  document.getElementById(
-    "todoFormMessage"
-  ).textContent = "";
+    if (
+      !data.success ||
+      !Array.isArray(data.todos)
+    ) {
+      throw new Error(
+        "Could not load To-Do."
+      );
+    }
 
-  document.getElementById(
-    "todoModal"
-  ).style.display = "flex";
+    const todo =
+      data.todos.find(
+        item =>
+          Number(item.id) === Number(id)
+      );
+
+    if (!todo) {
+      throw new Error(
+        "To-Do not found."
+      );
+    }
+
+
+    editingTodoId =
+      Number(todo.id);
+
+    document.getElementById(
+      "todoTitle"
+    ).value =
+      todo.title || "";
+
+    document.getElementById(
+      "todoNotes"
+    ).value =
+      todo.notes || "";
+
+    const message =
+      document.getElementById(
+        "todoFormMessage"
+      );
+
+    message.textContent = "";
+    message.style.display = "none";
+
+    document.getElementById(
+      "todoModal"
+    ).style.display = "flex";
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not open To-Do:",
+      error
+    );
+
+    alert(
+      "Could not open this To-Do."
+    );
+
+  }
 
 }
   async function renderTodos() {
