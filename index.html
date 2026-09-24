@@ -606,48 +606,95 @@ button {
   </div>
 
 </section>
+ <!-- TO-DO + LUNCHBOX -->
+
+<div class="two-column">
+
   <!-- TO-DO / MEMO -->
 
-<section class="section">
+  <section class="section">
 
-  <div class="section-title-row">
+    <div class="section-title-row">
 
-    <div>
+      <div>
 
-      <div class="section-title">
-        📋 To-Do / Memo
+        <div class="section-title">
+          📋 To-Do / Memo
+        </div>
+
+        <div class="section-note">
+          Things to remember — decide when later.
+        </div>
+
       </div>
 
-      <div class="section-note">
-        Things to remember — decide when later.
-      </div>
+
+      <button
+        class="add-button"
+        onclick="openTodoModal()"
+      >
+        + Add
+      </button>
 
     </div>
 
 
-    <button
-      class="add-button"
-      onclick="openTodoModal()"
+    <div id="todoList">
+
+      <div class="today-card">
+
+        <div class="today-main">
+          Loading...
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- LUNCHBOX -->
+
+  <section class="section">
+
+    <div
+      class="section-title-row"
+      style="
+        width:100%;
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        margin-bottom:14px;
+      "
     >
-      + Add
-    </button>
 
-  </div>
+      <div>
 
+        <div class="section-title">
+          🥪 Lunchbox
+        </div>
 
-  <div id="todoList">
+        <div class="section-note">
+          School lunch plan for the week.
+        </div>
 
-    <div class="today-card">
-
-      <div class="today-main">
-        Loading...
       </div>
 
     </div>
 
-  </div>
 
-</section>
+    <div
+      id="lunchboxGrid"
+      style="
+        width:100%;
+        display:block;
+      "
+    ></div>
+
+  </section>
+
+</div>
   <!-- THIS WEEK -->
 
   <section class="section">
