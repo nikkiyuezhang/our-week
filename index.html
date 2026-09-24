@@ -4649,7 +4649,17 @@ function closeTodoModal() {
   "
 >
 
-          <div style="flex:1;">
+          <div
+  style="
+    flex:1;
+    cursor:pointer;
+  "
+  onclick="openExistingTodo(
+    ${todo.id},
+    ${JSON.stringify(todo.title)},
+    ${JSON.stringify(todo.notes || "")}
+  )"
+>
 
   <div
     class="today-main"
