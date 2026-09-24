@@ -4437,7 +4437,7 @@ function closeTodoModal() {
   ).style.display = "none";
 
 }
-  async function saveTodo() {
+ async function saveTodo() {
 
   const title =
     document.getElementById(
@@ -4486,7 +4486,10 @@ function closeTodoModal() {
       await fetch(
         "/api/todos",
         {
-          method: "POST",
+          method:
+            editingTodoId
+              ? "PATCH"
+              : "POST",
 
           headers: {
             "Content-Type":
@@ -4496,10 +4499,18 @@ function closeTodoModal() {
               getFamilyCode()
           },
 
-          body: JSON.stringify({
-            title: title,
-            notes: notes
-          })
+          body: JSON.stringify(
+            editingTodoId
+              ? {
+                  id: editingTodoId,
+                  title: title,
+                  notes: notes
+                }
+              : {
+                  title: title,
+                  notes: notes
+                }
+          )
         }
       );
 
@@ -4519,13 +4530,17 @@ function closeTodoModal() {
 
 
     message.textContent =
-      "Saved ✓";
+      editingTodoId
+        ? "Updated ✓"
+        : "Saved ✓";
 
     message.style.display =
       "block";
 
 
     setTimeout(() => {
+
+      editingTodoId = null;
 
       closeTodoModal();
 
