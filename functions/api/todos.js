@@ -210,19 +210,79 @@ export async function onRequestPatch(context) {
 
     }
 
-    const completed =
-      body.completed ? 1 : 0;
+
+    /* =============================
+       UPDATE COMPLETED
+    ============================= */
+
+    if (
+      typeof body.completed === "boolean"
+    ) {
+
+      const completed =
+        body.completed ? 1 : 0;
+
+      await context.env.DB
+        .prepare(`
+          UPDATE todo_list
+          SET
+            completed = ?,
+            updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `)
+        .bind(
+          completed,
+          id
+        )
+        .run();
+
+      return Response.json({
+        success: true
+      });
+
+    }
+
+
+    /* =============================
+       UPDATE TITLE / NOTES
+    ============================= */
+
+    const title =
+      String(
+        body.title || ""
+      ).trim();
+
+    const notes =
+      String(
+        body.notes || ""
+      ).trim();
+
+    if (!title) {
+
+      return Response.json(
+        {
+          success: false,
+          error: "Todo title is required."
+        },
+        {
+          status: 400
+        }
+      );
+
+    }
 
     await context.env.DB
       .prepare(`
         UPDATE todo_list
         SET
-          completed = ?,
+          title = ?,
+          notes = ?,
           updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `)
       .bind(
-        completed,
+        title,
+        notes,
         id
       )
       .run();
@@ -246,7 +306,6 @@ export async function onRequestPatch(context) {
   }
 
 }
-
 /* =============================
    DELETE TODO
 ============================= */
