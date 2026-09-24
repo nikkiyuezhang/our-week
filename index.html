@@ -4557,7 +4557,31 @@ function closeTodoModal() {
   }
 
 }
-  
+  function openExistingTodo(
+  id,
+  title,
+  notes
+) {
+
+  editingTodoId = id;
+
+  document.getElementById(
+    "todoTitle"
+  ).value = title || "";
+
+  document.getElementById(
+    "todoNotes"
+  ).value = notes || "";
+
+  document.getElementById(
+    "todoFormMessage"
+  ).textContent = "";
+
+  document.getElementById(
+    "todoModal"
+  ).style.display = "flex";
+
+}
   async function renderTodos() {
 
   const list =
